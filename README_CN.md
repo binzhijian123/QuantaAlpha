@@ -1,3 +1,5 @@
+**第一次使用：先看[从零启动教程](docs/SETUP_AND_USAGE.md)**，按步骤完成安装、打开网页、填写 API 和准备数据。
+
 > **源码同步版，自动影子盘尚未验收。** 本次按用户授权先同步源码，运行卡点与验收边界见 [发布交接](docs/HANDOFF_PUBLIC.md)。使用者自行配置API、模型、环境和数据，历史配置仅为分发示例。
 
 > 个人开发修改版：使用者需自行配置 API、模型和数据环境。请先阅读[安装与使用说明](docs/SETUP_AND_USAGE.md)及[发布交接](docs/HANDOFF_PUBLIC.md)，通过 `frontend-v2/backend/local_app.py` 启动。当前自动影子盘仍待恢复验收，勿将上游论文结果解释为本机策略证明。

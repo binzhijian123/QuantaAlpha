@@ -1,3 +1,5 @@
+**第一次使用：先看[从零启动教程](docs/SETUP_AND_USAGE.md)**，按步骤完成安装、打开网页、填写 API 和准备数据。
+
 > **源码同步版，自动影子盘尚未验收。** 本次按用户授权先同步源码，运行卡点与验收边界见 [发布交接](docs/HANDOFF_PUBLIC.md)。使用者自行配置API、模型、环境和数据，历史配置仅为分发示例。
 
 > **Personal development version / 个人开发修改版** — Based on [QuantaAlpha/QuantaAlpha](https://github.com/QuantaAlpha/QuantaAlpha). Original authorship, paper references, and research results below belong to the upstream project; those results do not validate this local version.
