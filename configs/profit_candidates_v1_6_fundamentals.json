@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "1.6",
+    "factor_id_namespace": "profit-v1.6",
+    "created_before_data_sync": true,
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-29"
+    ],
+    "selection_rule": "highest positive mean daily RankIC after 0.70 absolute rank-correlation deduplication",
+    "historical_evidence_only": true,
+    "required_provider_extension": "point_in_time_fundamentals",
+    "availability_policy": "Financial values become usable on the first provider session strictly after max(announcement date, actual disclosure date). Daily valuation fields are observed at the trade-date close for next-session execution.",
+    "source_contracts": [
+      "https://tushare.pro/document/2?doc_id=79",
+      "https://tushare.pro/document/2?doc_id=162",
+      "https://tushare.pro/document/2?doc_id=32"
+    ],
+    "admission_factor_ids": [
+      "0ef55dbcf5e7249a",
+      "1d79084369ccb769",
+      "56a42028451eeb3f",
+      "f7cfe7d2f28322b1",
+      "b14e7b3b8d2fd9cb"
+    ]
+  },
+  "factors": {
+    "0ef55dbcf5e7249a": {
+      "factor_id": "0ef55dbcf5e7249a",
+      "factor_name": "PointInTimeQuarterlyROE",
+      "factor_expression": "$pit_q_dt_roe",
+      "factor_description": "Latest safely available single-quarter return on equity after non-recurring items.",
+      "factor_formulation": "q_dt_roe from the latest report period available under the frozen as-of policy",
+      "metadata": {
+        "mechanism_id": "fundamental_profitability_quality",
+        "hypothesis": "More profitable firms after excluding non-recurring items earn higher next-period returns than less profitable firms.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered before Tushare data synchronization; no historical factor or strategy result has been viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define operating profitability after excluding non-recurring items as the quality mechanism.",
+          "description_to_formulation": "The formulation uses the official single-quarter deducted ROE field.",
+          "formulation_to_expression": "The expression directly reads the point-in-time q_dt_roe field without a sign or look-ahead transformation.",
+          "overall_feedback": "Semantic direction is fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "1d79084369ccb769": {
+      "factor_id": "1d79084369ccb769",
+      "factor_name": "PointInTimeCashConversion",
+      "factor_expression": "$pit_q_ocf_to_sales",
+      "factor_description": "Latest safely available single-quarter operating cash flow relative to sales.",
+      "factor_formulation": "q_ocf_to_sales from the latest report period available under the frozen as-of policy",
+      "metadata": {
+        "mechanism_id": "fundamental_cash_conversion",
+        "hypothesis": "Firms converting a larger share of sales into operating cash flow have higher earnings quality and earn higher next-period returns.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered before Tushare data synchronization; no historical factor or strategy result has been viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both use operating cash conversion as the earnings-quality mechanism.",
+          "description_to_formulation": "The official ratio measures quarterly operating cash flow relative to sales.",
+          "formulation_to_expression": "The expression directly reads the lag-safe q_ocf_to_sales value.",
+          "overall_feedback": "Semantic direction is fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "56a42028451eeb3f": {
+      "factor_id": "56a42028451eeb3f",
+      "factor_name": "PointInTimeEarningsGrowth",
+      "factor_expression": "$pit_q_netprofit_yoy",
+      "factor_description": "Latest safely available year-over-year growth in single-quarter parent-attributable net profit.",
+      "factor_formulation": "q_netprofit_yoy from the latest report period available under the frozen as-of policy",
+      "metadata": {
+        "mechanism_id": "fundamental_earnings_growth",
+        "hypothesis": "Stronger reported year-over-year earnings growth predicts higher next-period returns before the information is fully incorporated.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered before Tushare data synchronization; no historical factor or strategy result has been viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define reported earnings growth as the information mechanism.",
+          "description_to_formulation": "The formulation uses the official single-quarter year-over-year net-profit field.",
+          "formulation_to_expression": "The expression directly reads the lag-safe q_netprofit_yoy value.",
+          "overall_feedback": "Semantic direction is fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "f7cfe7d2f28322b1": {
+      "factor_id": "f7cfe7d2f28322b1",
+      "factor_name": "PointInTimeLowLeverage",
+      "factor_expression": "-1 * $pit_debt_to_assets",
+      "factor_description": "Negative latest safely available debt-to-assets ratio, so less leverage receives a higher score.",
+      "factor_formulation": "-debt_to_assets from the latest report period available under the frozen as-of policy",
+      "metadata": {
+        "mechanism_id": "fundamental_balance_sheet_resilience",
+        "hypothesis": "Lower balance-sheet leverage reduces distress risk and predicts higher risk-adjusted next-period returns.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered before Tushare data synchronization; no historical factor or strategy result has been viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define lower leverage as balance-sheet resilience.",
+          "description_to_formulation": "Negating debt-to-assets gives safer balance sheets a higher score.",
+          "formulation_to_expression": "The expression applies exactly the declared negative sign to the lag-safe debt ratio.",
+          "overall_feedback": "Semantic direction is fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "b14e7b3b8d2fd9cb": {
+      "factor_id": "b14e7b3b8d2fd9cb",
+      "factor_name": "PointInTimeBookToPrice",
+      "factor_expression": "$pit_book_to_price",
+      "factor_description": "Positive book-to-price derived from the same-day close valuation snapshot; non-positive price-to-book observations are missing.",
+      "factor_formulation": "1 / pb when pb > 0, otherwise missing",
+      "metadata": {
+        "mechanism_id": "fundamental_value_book_to_price",
+        "hypothesis": "Cheaper firms relative to positive book equity earn higher next-period returns than expensive firms.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered before Tushare data synchronization; no historical factor or strategy result has been viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define lower positive price-to-book as a higher value score.",
+          "description_to_formulation": "Taking the reciprocal maps lower positive PB to higher book-to-price and excludes non-positive PB.",
+          "formulation_to_expression": "The expression directly reads the point-in-time derived book-to-price field.",
+          "overall_feedback": "Semantic direction is fixed; this is not performance acceptance."
+        }
+      }
+    }
+  }
+}

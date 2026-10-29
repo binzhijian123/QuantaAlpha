@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.4",
+    "factor_id_namespace": "profit-v2.4-investment-data-max-daily-return",
+    "created_before_candidate_factor_derivation": true,
+    "created_before_candidate_factor_cache": true,
+    "created_before_candidate_rank_ic": true,
+    "created_before_candidate_strategy_backtest": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "current_state": "PREREGISTERED",
+    "provider_release": "investment_data_20260804_cn",
+    "provider_path": "data/market/a_share/qlib/investment_data_20260804_cn",
+    "provider_fingerprint": "e24ad8753bdd27610dc00061760cec593a560a3fb9b4986ba748c9250cfbdb10",
+    "provider_latest_session": "2026-08-04",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.95 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and every frozen price-volume candidate through v1.5",
+    "source_fields": [
+      "close"
+    ],
+    "formation_policy": "At each close, compute the largest adjusted-close daily return observed over the current and prior 20 Provider sessions. The score is its negative and is first tradable at the following session open.",
+    "holding_policy": "Use only the paper-supported one-month Mdr1 horizon: a 22-session forward label, Top 50, n_drop=1, and a 21-session minimum holding period. Do not alter the window, direction, label, validation segment, or execution contract after viewing results.",
+    "paper_definition": "Mdr is the maximum daily stock return in the prior month. The paper reports a negative high-minus-low spread for Mdr1 and states that only the one-month holding variant remains significant in the post-2007 sample.",
+    "paper_proxy_difference": "The paper uses previous-calendar-month formation, Mainboard breakpoints, value-weighted quintiles, and a high-minus-low portfolio. QuantaAlpha uses a rolling 21-session score in the point-in-time CSI300 universe and a long-only staggered TopK strategy. This is a tradable mechanism proxy, not an exact paper replication.",
+    "prediction_direction": "lower_maximum_daily_return_higher_next_return",
+    "execution_contract": {
+      "strategy": "TopkDropoutStrategy",
+      "topk": 50,
+      "n_drop": 1,
+      "hold_thresh": 21,
+      "deal_price": "open",
+      "open_cost": 0.0005,
+      "close_cost": 0.0015,
+      "limit_threshold": 0.095
+    },
+    "admission_gates": {
+      "minimum_coverage": 0.95,
+      "minimum_mean_daily_rank_ic_exclusive": 0.0,
+      "maximum_absolute_rank_correlation_exclusive": 0.70,
+      "historical_index_membership_required": true,
+      "provider_fingerprint_must_match": true
+    },
+    "homogeneous_price_volume_factor_count_before_v2_4": 19,
+    "homogeneous_price_volume_factor_count_after_v2_4": 20,
+    "homogeneous_project_trial_count_before_v2_4": 28,
+    "homogeneous_project_trial_count_after_v2_4": 29,
+    "project_strategy_attempt_floor_after_v2_4": 33,
+    "source_contracts": [
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://www.gsm.pku.edu.cn/finvc/info/1028/1145.htm",
+      "https://www.gsm.pku.edu.cn/finvc/info/1028/1145_6.htm"
+    ],
+    "admission_factor_ids": [
+      "c2672568e33f0849"
+    ]
+  },
+  "factors": {
+    "c2672568e33f0849": {
+      "factor_id": "c2672568e33f0849",
+      "factor_name": "NegMaximumDailyReturn21",
+      "factor_expression": "-TS_MAX(TS_PCTCHANGE($close, 1), 21)",
+      "factor_description": "Negative of the largest adjusted-close daily return over the latest 21 trading sessions. Higher scores identify stocks with less lottery-like recent payoffs.",
+      "factor_formulation": "score_t = -max(r_d), d in [t-20, t]; signal after close t, earliest execution at open t+1",
+      "metadata": {
+        "mechanism_id": "a_share_lottery_demand_maximum_daily_return",
+        "hypothesis": "Within the point-in-time CSI300 universe, stocks without an extreme positive daily return in the latest month outperform high-MAX lottery-like stocks over the next month.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "The sole candidate, direction, period, label, and execution contract were frozen before its factor values, RankIC, forward returns, cache, or strategy result were produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "Negating the rolling maximum daily return aligns higher scores with the paper-supported long-low-Mdr direction, and the expression contains no future reference."
+        }
+      }
+    }
+  }
+}

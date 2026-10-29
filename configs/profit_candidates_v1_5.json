@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "1.5",
+    "factor_id_namespace": "profit-v1.5",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-29"
+    ],
+    "selection_rule": "highest positive mean daily RankIC after 0.70 absolute rank-correlation deduplication",
+    "historical_evidence_only": true,
+    "admission_factor_ids": [
+      "aaa7b2e1bc196957",
+      "82c0e7bda4f4534f",
+      "5234175cf1b85da7",
+      "b2de955aa7c6bf26"
+    ]
+  },
+  "factors": {
+    "aaa7b2e1bc196957": {
+      "factor_id": "aaa7b2e1bc196957",
+      "factor_name": "TrendEfficiency20",
+      "factor_expression": "TS_PCTCHANGE($close, 20) / (TS_SUM(ABS(TS_PCTCHANGE($close, 1)), 20) + 1e-8)",
+      "factor_description": "Twenty-day net close return divided by the sum of absolute daily returns. Higher values represent a more persistent upward path.",
+      "factor_formulation": "R_{t,20} / (sum_{i=0}^{19} |r_{t-i,1}| + epsilon)",
+      "metadata": {
+        "mechanism_id": "trend_efficiency",
+        "hypothesis": "A persistent upward price path with less path noise predicts a higher next-period return than a choppy path with the same net move.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered hypothesis; no historical strategy result was used to mark it accepted."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define persistence as net return relative to total path movement.",
+          "description_to_formulation": "The numerator is the 20-day return and the denominator is absolute daily-return path length.",
+          "formulation_to_expression": "TS_PCTCHANGE and TS_SUM(ABS(...)) implement the declared ratio without future references.",
+          "overall_feedback": "Semantics and positive direction are aligned; this is not performance acceptance."
+        }
+      }
+    },
+    "82c0e7bda4f4534f": {
+      "factor_id": "82c0e7bda4f4534f",
+      "factor_name": "UpDownVolumeImbalance20",
+      "factor_expression": "(SUMIF($volume, 20, TS_PCTCHANGE($close, 1) > 0) - SUMIF($volume, 20, TS_PCTCHANGE($close, 1) < 0)) / (TS_SUM($volume, 20) + 1e-8)",
+      "factor_description": "Twenty-day volume on up-close days minus volume on down-close days, normalized by total volume.",
+      "factor_formulation": "(sum V_i I(r_i>0) - sum V_i I(r_i<0)) / (sum V_i + epsilon)",
+      "metadata": {
+        "mechanism_id": "up_down_volume_imbalance",
+        "hypothesis": "Buying participation that dominates selling participation over twenty days predicts a higher next-period return.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered hypothesis; no historical strategy result was used to mark it accepted."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Up-day and down-day volume are used as observable participation proxies.",
+          "description_to_formulation": "Signed conditional volume is normalized by total rolling volume.",
+          "formulation_to_expression": "SUMIF conditions use contemporaneous and past close returns only, with no future reference.",
+          "overall_feedback": "Semantics and positive direction are aligned; this is not performance acceptance."
+        }
+      }
+    },
+    "5234175cf1b85da7": {
+      "factor_id": "5234175cf1b85da7",
+      "factor_name": "VWAPRangeAccumulation20",
+      "factor_expression": "TS_SUM(((2 * $vwap - $high - $low) / ($high - $low + 1e-8)) * $volume, 20) / (TS_SUM($volume, 20) + 1e-8)",
+      "factor_description": "Twenty-day volume-weighted location of VWAP inside each daily high-low range; higher values indicate accumulation near the upper range.",
+      "factor_formulation": "sum V_i (2 VWAP_i - H_i - L_i)/(H_i-L_i+epsilon) / (sum V_i+epsilon)",
+      "metadata": {
+        "mechanism_id": "vwap_range_accumulation",
+        "hypothesis": "Sustained volume transacted nearer the upper part of the daily range indicates accumulation and predicts a higher next-period return.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered hypothesis; no historical strategy result was used to mark it accepted."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "VWAP position within the range is the declared accumulation proxy.",
+          "description_to_formulation": "The centered range location is weighted by volume and averaged over twenty days.",
+          "formulation_to_expression": "The expression directly implements the declared range-location and rolling-volume normalization.",
+          "overall_feedback": "Semantics and positive direction are aligned; this is not performance acceptance."
+        }
+      }
+    },
+    "b2de955aa7c6bf26": {
+      "factor_id": "b2de955aa7c6bf26",
+      "factor_name": "PriorRangeBreakout20",
+      "factor_expression": "(($close - TS_MIN(DELAY($low, 1), 20)) / (TS_MAX(DELAY($high, 1), 20) - TS_MIN(DELAY($low, 1), 20) + 1e-8)) - 0.5",
+      "factor_description": "Current close location inside the prior twenty-day high-low range, centered at zero; higher values represent upside breakout pressure.",
+      "factor_formulation": "(C_t - min L_{t-20:t-1}) / (max H_{t-20:t-1} - min L_{t-20:t-1} + epsilon) - 0.5",
+      "metadata": {
+        "mechanism_id": "prior_range_breakout",
+        "hypothesis": "A close near or above the top of the prior twenty-day range predicts a higher next-period return through momentum and breakout continuation.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Pre-registered hypothesis; no historical strategy result was used to mark it accepted."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both use current close location versus the prior range as breakout pressure.",
+          "description_to_formulation": "The formula centers normalized prior-range location at zero.",
+          "formulation_to_expression": "DELAY by one day ensures rolling highs and lows exclude the current day and all future data.",
+          "overall_feedback": "Semantics and positive direction are aligned; this is not performance acceptance."
+        }
+      }
+    }
+  }
+}

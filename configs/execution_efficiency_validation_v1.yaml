@@ -1,0 +1,49 @@
+protocol_version: "execution-efficiency-v1"
+run_id: null
+baseline_runtime_config: "data/results/standard_baseline_validation/alpha158_20260803_063605/configs/B0.yaml"
+prediction_path: "mlruns/729274298022003063/50f3b6d459f3430c8bdcd285248877be/artifacts/pred.pkl"
+frozen_baseline_daily: "data/results/standard_baseline_validation/alpha158_20260803_063605/trials/B0/B0_cumulative_excess.csv"
+source_manifest: "data/results/standard_baseline_validation/alpha158_20260803_063605/manifest.json"
+output_root: "data/results/execution_efficiency_validation"
+cost_multipliers: [1.0, 1.5, 2.0]
+
+comparison:
+  baseline:
+    id: "E0"
+    n_drop: 5
+  candidate:
+    id: "E1"
+    n_drop: 1
+
+frozen_contract:
+  runtime_config_sha256: "a7e4104ec9906300c7e7a85711853e2f5b07fcd4f57fed682df6f51e46b864e3"
+  prediction_sha256: "cde012fd6b9708fcd2820134f652d2bd2fdfef800a322734d4e2261991817c1b"
+  frozen_baseline_daily_sha256: "68a2b74940d32e6b0d28d7b7a29becd04b46264ab195ba59782108d4b9ac8875"
+  source_manifest_sha256: "4368ad665a2071bc6f6eddcd5531acf7474d676c931476b07894e09b734e0d7a"
+  provider_path: "data/market/a_share/qlib/investment_data_20260725_cn"
+  provider_fingerprint: "7813a5dc8e2d081f80d999599a8011013d202c2e7b12e1d3241553c81d3c5d35"
+  topk: 50
+  baseline_n_drop: 5
+
+promotion:
+  recent_window_days: 252
+  recent_annualized_excess_min: 0.0
+  latest_complete_year: "2025"
+  latest_year_annualized_excess_min: 0.02
+  information_ratio_min: 0.5
+  max_drawdown_abs_max: 0.15
+  cost_multiplier: 2.0
+  stressed_annualized_excess_min: 0.0
+  stability_years: ["2022", "2023", "2024", "2025"]
+  positive_years_min: 3
+  latest_year_max_positive_month_share: 0.8
+  annualized_excess_improvement_min: 0.02
+  information_ratio_improvement_min: 0.2
+  annualized_excess_degradation_max: 0.01
+  information_ratio_degradation_max: 0.1
+  drawdown_degradation_max: 0.02
+  minimum_cost_reduction: 0.5
+  bootstrap_iterations: 1000
+  bootstrap_block_days: 20
+  bootstrap_seed: 42
+  bootstrap_lower_bound_min: 0.0

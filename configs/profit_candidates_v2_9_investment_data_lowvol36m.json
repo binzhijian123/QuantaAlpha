@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.9",
+    "factor_id_namespace": "profit-v2.9-investment-data-lowvol36m-csi300-long-only-proxy",
+    "created_before_candidate_factor_derivation": true,
+    "created_before_candidate_factor_cache": true,
+    "created_before_candidate_rank_ic": true,
+    "created_before_candidate_strategy_backtest": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "external_paper_evidence_viewed_before_registration": true,
+    "project_historical_returns_previously_viewed": true,
+    "related_max_and_beta_mechanisms_previously_tested": true,
+    "exact_lowvol36_monthly_previously_tested": false,
+    "historical_evidence_only": true,
+    "current_state": "PREREGISTERED",
+    "external_token_required": false,
+    "provider_release": "investment_data_20260804_cn",
+    "provider_path": "data/market/a_share/qlib/investment_data_20260804_cn",
+    "provider_fingerprint": "e24ad8753bdd27610dc00061760cec593a560a3fb9b4986ba748c9250cfbdb10",
+    "provider_latest_session": "2026-08-04",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.95 coverage, and absolute rank correlation below 0.70 versus Alpha158_20, Amihud20HistoricalProxy, and every frozen same-provider candidate through v2.8",
+    "source_fields": [
+      "close"
+    ],
+    "provider_price_contract": "The pinned investment_data Qlib Provider supplies adjusted close values. Monthly returns are calculated directly from those normalized close series; factor is not multiplied into close a second time.",
+    "formation_policy": "For every target calendar month, use the preceding 37 consecutive month-end adjusted closes to form 36 complete monthly returns. Compute their sample standard deviation with 36 required observations, negate it, and hold that score constant throughout the target month. Do not use any close from the target month.",
+    "holding_policy": "Use the paper-supported monthly horizon: a 22-session forward label, Top 50, n_drop=1, and a 21-session minimum holding period. Do not alter the sign, 36-month formation window, observation floor, label, validation segment, or execution contract after viewing results.",
+    "paper_definition": "Blitz, Hanauer, and van Vliet sort China A-share stocks monthly on the standard deviation of monthly total returns over the preceding three years, requiring 36 monthly observations, and document a positive low-volatility long portfolio alpha.",
+    "paper_proxy_difference": "The paper uses an all-investable-A-share universe, monthly total returns in USD, value-weighted deciles, and paper-specific eligibility filters. QuantaAlpha uses point-in-time CSI300 members, adjusted-close return proxies, a monthly constant long-only Top50 signal, and next-session-open execution. This is LowVol36-CSI300-LongOnly-Proxy, not a paper replication or a profit guarantee.",
+    "prediction_direction": "lower_trailing_36_month_volatility_higher_next_month_return",
+    "minimum_monthly_return_observations": 36,
+    "execution_contract": {
+      "strategy": "TopkDropoutStrategy",
+      "topk": 50,
+      "n_drop": 1,
+      "hold_thresh": 21,
+      "deal_price": "open",
+      "open_cost": 0.0005,
+      "close_cost": 0.0015,
+      "limit_threshold": 0.095
+    },
+    "admission_gates": {
+      "minimum_coverage": 0.95,
+      "minimum_mean_daily_rank_ic_exclusive": 0.0,
+      "maximum_absolute_rank_correlation_exclusive": 0.70,
+      "minimum_monthly_return_observations": 36,
+      "historical_index_membership_required": true,
+      "provider_fingerprint_must_match": true,
+      "cache_code_binding_required": true
+    },
+    "factor_cache_preparation": {
+      "calculation_start": "2010-01-01",
+      "calculation_end": "2026-08-04",
+      "static_union_of_historical_members": true,
+      "membership_start": "2016-01-01",
+      "membership_end": "2026-08-04"
+    },
+    "homogeneous_price_volume_factor_count_before_v2_9": 24,
+    "homogeneous_price_volume_factor_count_after_v2_9": 25,
+    "historical_revealed_trial_floor_before_v2_9": 354,
+    "declared_trial_penalty_after_planned_v2_9_evaluations": 381,
+    "source_contracts": [
+      "https://doi.org/10.1057/s41260-021-00218-0",
+      "https://assets.ctfassets.net/tl4x668xzide/1QBgySFzYmwqGlDmSaFYay/b118ecac9f394202b5d657f33f5d5fab/the-volatility-effect-in-china.pdf",
+      "https://pure.eur.nl/ws/files/58642799/Anomalies_in_the_China_A_share_market.pdf",
+      "https://github.com/chenditc/investment_data/blob/763d89573f21b04259652818b25930e32319ee33/qlib/normalize.py"
+    ],
+    "admission_factor_ids": [
+      "af197059a9fb9b9e"
+    ]
+  },
+  "factors": {
+    "af197059a9fb9b9e": {
+      "factor_id": "af197059a9fb9b9e",
+      "factor_name": "LowVolatility36MMonthlyProxy",
+      "factor_expression": "-MONTHLY_RETURN_VOLATILITY($close, 36, 36)",
+      "factor_description": "Negative sample standard deviation of the preceding 36 complete monthly adjusted-close returns, held constant throughout the target month. Higher scores identify lower-volatility stocks.",
+      "factor_formulation": "LowVol36(t) = -StdDev(r_m for m=t-36,...,t-1), where r_m=C_m/C_(m-1)-1 and all 36 consecutive monthly returns are required",
+      "metadata": {
+        "mechanism_id": "a_share_long_horizon_low_volatility_premium",
+        "hypothesis": "Within the point-in-time CSI300 universe, stocks with lower volatility over the preceding 36 complete months earn higher next-month risk-adjusted returns because leverage constraints and speculative preference can overprice high-risk stocks.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true,
+        "cache_code_binding_required": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "The sole candidate, operator implementation, negative direction, 36-month formation window, observation floor, period, label, admission gates, and execution contract were frozen before its factor values, RankIC, forward returns, cache, or strategy result were produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression negates the paper-defined trailing 36-month monthly-return volatility so the long-only rank favors low-volatility stocks; shifting the completed rolling statistic by one month prevents target-month leakage."
+        }
+      }
+    }
+  }
+}

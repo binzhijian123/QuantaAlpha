@@ -1,0 +1,109 @@
+random_seed: 42
+
+experiment:
+  name: "research_shadow_20260811_deltaes1_v1"
+  recorder: "research_shadow_20260811_deltaes1_v1"
+
+factor_source:
+  type: "combined"
+  custom:
+    json_files:
+      - "data/factorlib/research_shadow_20260811_deltaes1_provider.json"
+    quality_filter: null
+    decision_filter: "all"
+    max_factors: 1
+    use_llm_for_incompatible: false
+    strict: true
+    expected_factor_count: 1
+    expected_factor_ids:
+      - "efaf6a5f1248d592"
+  combined:
+    official_source: "alpha158_20"
+    include_custom: true
+
+data:
+  provider_uri: "data/market/a_share/qlib/investment_data_20260811_cn"
+  provider_strict: true
+  provider_fingerprint: "402ad2bc437dacdd583b15bcdf1d335368ffcf7d0cc6fee61cf99e0927b102ae"
+  region: "cn"
+  market: "csi300"
+  start_time: "2016-01-01"
+  end_time: "2026-08-11"
+  additional_fields: ["factor"]
+  benchmark_instrument: "SH000300"
+
+dataset:
+  label: "Ref($close, -22) / Ref($close, -1) - 1"
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "DropnaLabel"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  segments:
+    train: ["2016-01-01", "2026-07-10"]
+
+model:
+  type: "lgb"
+  params:
+    loss: "mse"
+    learning_rate: 0.1
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 0
+    num_boost_round: 69
+    min_child_samples: 100
+    feature_fraction_bynode: 0.8
+
+backtest:
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal: "<PRED>"
+      topk: 50
+      n_drop: 1
+      hold_thresh: 21
+      risk_degree: 0.95
+      method_buy: "top"
+      method_sell: "bottom"
+      only_tradable: false
+      forbid_all_trade_at_limit: true
+
+llm:
+  enabled: false
+  cache_results: true
+  cache_dir: "data/results/factor_cache/research_shadow_20260811_deltaes1"
+  cache_namespace: "research-shadow-20260811-deltaes1-v1"
+  auto_extract_cache: false
+  debug: false
+
+factor_calculation:
+  output_dir: "data/results/computed_factors"
+  save_intermediate: true
+  n_jobs: 4
+  data_file: null

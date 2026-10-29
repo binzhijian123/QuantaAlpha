@@ -1,0 +1,55 @@
+protocol_version: "quarterly-walk-forward-v1"
+run_id: null
+baseline_runtime_config: "data/results/standard_baseline_validation/alpha158_20260803_063605/configs/B0.yaml"
+baseline_daily: "data/results/execution_efficiency_validation/execution_20260803_064556/trials/E1/daily.csv"
+source_manifest: "data/results/execution_efficiency_validation/execution_20260803_064556/manifest.json"
+source_decision: "data/results/execution_efficiency_validation/execution_20260803_064556/decision.json"
+output_root: "data/results/walk_forward_validation"
+factor_count: 20
+n_drop: 1
+cost_multipliers: [1.0, 1.5, 2.0]
+
+schedule:
+  frequency: "quarterly"
+  train_start: "2016-01-01"
+  validation_sessions: 252
+  label_horizon_sessions: 2
+  purge_labels_before_each_boundary: true
+  refit_on_train_and_validation: true
+  test_start: "2022-01-04"
+  test_end: "2026-07-22"
+
+frozen_contract:
+  runtime_config_sha256: "a7e4104ec9906300c7e7a85711853e2f5b07fcd4f57fed682df6f51e46b864e3"
+  baseline_daily_sha256: "dffbf430bb270eb35731abb9faa493577cf9300edbff646e4e177670c7ffdcee"
+  source_manifest_sha256: "ba9eedf64c97634976bf49ca7868d9c4da8e333d59ac1d6429800406e0eda09c"
+  source_decision_sha256: "1d6074bd071cea7fad9cea770a46031e1454e0dfbf785e4dbb00c7043a808ef0"
+  provider_path: "data/market/a_share/qlib/investment_data_20260725_cn"
+  provider_fingerprint: "7813a5dc8e2d081f80d999599a8011013d202c2e7b12e1d3241553c81d3c5d35"
+  factor_source: "alpha158_20"
+  factor_count: 20
+  n_drop: 1
+  fold_count: 19
+
+promotion:
+  recent_window_days: 252
+  recent_annualized_excess_min: 0.0
+  latest_complete_year: "2025"
+  latest_year_annualized_excess_min: 0.02
+  information_ratio_min: 0.5
+  max_drawdown_abs_max: 0.15
+  cost_multiplier: 2.0
+  stressed_annualized_excess_min: 0.0
+  stability_years: ["2022", "2023", "2024", "2025"]
+  positive_years_min: 3
+  latest_year_max_positive_month_share: 0.8
+  annualized_excess_improvement_min: 0.02
+  information_ratio_improvement_min: 0.2
+  annualized_excess_degradation_max: 0.01
+  information_ratio_degradation_max: 0.1
+  drawdown_degradation_max: 0.02
+  bootstrap_iterations: 1000
+  bootstrap_block_days: 20
+  bootstrap_seed: 42
+  bootstrap_lower_bound_min: 0.0
+

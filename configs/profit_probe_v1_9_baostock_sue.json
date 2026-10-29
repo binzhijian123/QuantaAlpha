@@ -1,0 +1,53 @@
+{
+  "schema_version": "profit_data_probe_v1",
+  "protocol_version": "1.9",
+  "created_before_probe": true,
+  "returns_or_prices_may_be_read": false,
+  "provider": "baostock",
+  "base_provider": "data/market/a_share/qlib/investment_data_20260725_baostock_v1_8_ep_cn",
+  "market": "csi300",
+  "probe_window": [
+    "2024-01-02",
+    "2024-12-31"
+  ],
+  "history_seed_years": 4,
+  "selection": {
+    "eligible_rule": "csi300 membership span overlaps the frozen probe window",
+    "eligible_code_count": 328,
+    "ranking_rule": "ascending sha256('profit-v1.9-sue-probe:' + qlib_code), then qlib_code",
+    "sample_size": 20,
+    "codes": [
+      "600584.SH",
+      "000807.SZ",
+      "600010.SH",
+      "002049.SZ",
+      "601872.SH",
+      "600018.SH",
+      "600893.SH",
+      "601628.SH",
+      "000999.SZ",
+      "002027.SZ",
+      "000858.SZ",
+      "600196.SH",
+      "002236.SZ",
+      "601728.SH",
+      "002821.SZ",
+      "301269.SZ",
+      "688271.SH",
+      "601288.SH",
+      "002916.SZ",
+      "300413.SZ"
+    ]
+  },
+  "acceptance": {
+    "source_request_failures_max": 0,
+    "availability_leak_rows_max": 0,
+    "report_period_leak_rows_max": 0,
+    "conflicting_duplicate_quarters_max": 0,
+    "codes_with_any_sue_min": 16,
+    "point_in_time_daily_coverage_min": 0.5,
+    "raw_reuse_hash_match_required": true,
+    "decompressed_panel_hash_match_required": true
+  },
+  "failure_policy": "Do not replace sampled codes, relax thresholds, inspect candidate returns, or perform a full-universe sync. Record the failed probe and create a new protocol version for any material change."
+}

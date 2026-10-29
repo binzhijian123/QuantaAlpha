@@ -1,0 +1,111 @@
+protocol_version: "2.8"
+run_id: null
+
+factor_library: "data/factorlib/profit_trials_v2_8_investment_data_beta3m_provider.json"
+selection_evidence: null
+historical_provider: "data/market/a_share/qlib/investment_data_20260804_cn"
+recent_provider: "data/market/a_share/qlib/investment_data_20260804_cn"
+backtest_config: "configs/backtest_profit_validation_v2_8_investment_data_beta3m.yaml"
+output_root: "data/results/profit_validation"
+
+skip_uncached: true
+stop_on_audit_failure: true
+include_audit_candidate: false
+cost_multipliers: [1.0, 1.5, 2.0]
+
+factor_cache_preparation:
+  calculation_start: "2010-01-01"
+  calculation_end: "2026-08-04"
+  static_instrument_history: true
+  membership_start: "2016-01-01"
+  membership_end: "2026-08-04"
+
+trial_matrix:
+  enabled: true
+  expected_factor_count: 24
+  target_factor_id: "1b7913109f79fb5a"
+  target_selection_rule: null
+  target_candidate_factor_ids:
+    - "1b7913109f79fb5a"
+  historical_evidence_only: true
+
+validation:
+  market: "csi300"
+  required_start: "2016-01-01"
+  required_end: "2026-08-04"
+  validation_start: "2021-01-04"
+  validation_end: "2021-12-01"
+  label: "Ref($close, -22) / Ref($close, -1) - 1"
+  label_horizon_trading_days: 22
+  return_holding_period_trading_days: 21
+  correlation_threshold: 0.70
+  factor_coverage_min: 0.95
+  rank_ic_min: 0.0
+  data_sample_size: 20
+  reference_factor_expressions:
+    Amihud20HistoricalProxy: "Mean(Abs($close / Ref($close, 1) - 1) / (($volume * $close) + 1e-8), 20)"
+  reference_cached_factor_ids:
+    - "026c925efb51a980"
+    - "650cd2a4a98c89f9"
+    - "86a385103b35e445"
+    - "0b598d4bb027feb6"
+    - "c884971b3acc9e2e"
+    - "ed680a875bf15ca9"
+    - "42b3f35721250569"
+    - "3b855b4433f2a1b9"
+    - "e5a0ce78e5aa5d93"
+    - "e65ccb703b32922e"
+    - "a8218603987ecbc8"
+    - "cca04d3f4ba33b24"
+    - "06a46c5144b048f2"
+    - "f65d571f1fb18226"
+    - "2998e504baeb282d"
+    - "aaa7b2e1bc196957"
+    - "82c0e7bda4f4534f"
+    - "5234175cf1b85da7"
+    - "b2de955aa7c6bf26"
+    - "c2672568e33f0849"
+    - "61c75b5b09f24f51"
+    - "9ed74ff7c9df603e"
+    - "031b3c48bf7fb29b"
+  admission_factor_ids:
+    - "1b7913109f79fb5a"
+
+promotion:
+  recent_window_days: 252
+  recent_annualized_excess_min: 0.0
+  latest_complete_year: "2025"
+  latest_year_annualized_excess_min: 0.02
+  information_ratio_min: 0.5
+  max_drawdown_abs_max: 0.15
+  cost_multiplier: 2.0
+  stressed_annualized_excess_min: 0.0
+  stability_years: ["2022", "2023", "2024", "2025"]
+  positive_years_min: 3
+  latest_year_max_positive_month_share: 0.8
+  annualized_excess_improvement_min: 0.02
+  information_ratio_improvement_min: 0.2
+  annualized_excess_degradation_max: 0.01
+  information_ratio_degradation_max: 0.1
+  drawdown_degradation_max: 0.02
+  bootstrap_iterations: 1000
+  bootstrap_block_days: 21
+  bootstrap_seed: 42
+  bootstrap_lower_bound_min: 0.0
+  multiple_testing:
+    enabled: true
+    required: true
+    matrix_trials: 24
+    total_trials: 33
+    dsr_probability_min: 0.95
+    pbo:
+      required: true
+      partitions: 16
+      minimum_strategies: 10
+      probability_max: 0.05
+
+walk_forward:
+  required: true
+  result_path: null
+
+random_seed: 42

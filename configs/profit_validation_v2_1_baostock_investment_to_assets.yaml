@@ -1,0 +1,83 @@
+protocol_version: "2.1"
+run_id: null
+
+factor_library: "data/factorlib/profit_trials_v2_1_baostock_investment_to_assets_provider_r1.json"
+selection_evidence: null
+historical_provider: "data/market/a_share/qlib/investment_data_20260725_baostock_v2_1_investment_to_assets_cn"
+recent_provider: "data/market/a_share/qlib/investment_data_20260725_baostock_v2_1_investment_to_assets_cn"
+backtest_config: "configs/backtest_profit_validation_v2_1_baostock_investment_to_assets.yaml"
+output_root: "data/results/profit_validation"
+
+skip_uncached: true
+stop_on_audit_failure: true
+include_audit_candidate: false
+cost_multipliers: [1.0, 1.5, 2.0]
+
+trial_matrix:
+  enabled: true
+  expected_factor_count: 26
+  target_factor_id: "aacce6286aeb85e5"
+  target_selection_rule: null
+  target_candidate_factor_ids:
+    - "aacce6286aeb85e5"
+  historical_evidence_only: true
+
+validation:
+  market: "csi300"
+  required_start: "2016-01-01"
+  required_end: "2026-07-24"
+  validation_start: "2020-01-02"
+  validation_end: "2020-12-17"
+  label: "Ref($close, -253) / Ref($close, -1) - 1"
+  label_horizon_trading_days: 253
+  return_holding_period_trading_days: 252
+  correlation_threshold: 0.70
+  factor_coverage_min: 0.50
+  rank_ic_min: 0.0
+  data_sample_size: 20
+  reference_factor_expressions:
+    v1_7_annual_roe: "$pit_fy_roe_avg"
+    v1_7_annual_earnings_growth: "$pit_fy_netprofit_yoy"
+    v1_7_book_to_price: "$pit_book_to_price"
+    v1_8_earnings_to_price: "$pit_earnings_to_price"
+    v1_9_seasonal_sue: "$pit_sue_seasonal"
+    v2_0_earnings_abr: "$pit_abr_earnings"
+  admission_factor_ids:
+    - "aacce6286aeb85e5"
+
+promotion:
+  recent_window_days: 252
+  recent_annualized_excess_min: 0.0
+  latest_complete_year: "2025"
+  latest_year_annualized_excess_min: 0.02
+  information_ratio_min: 0.5
+  max_drawdown_abs_max: 0.15
+  cost_multiplier: 2.0
+  stressed_annualized_excess_min: 0.0
+  stability_years: ["2022", "2023", "2024", "2025"]
+  positive_years_min: 3
+  latest_year_max_positive_month_share: 0.8
+  annualized_excess_improvement_min: 0.02
+  information_ratio_improvement_min: 0.2
+  annualized_excess_degradation_max: 0.01
+  information_ratio_degradation_max: 0.1
+  drawdown_degradation_max: 0.02
+  bootstrap_iterations: 1000
+  bootstrap_block_days: 252
+  bootstrap_seed: 42
+  bootstrap_lower_bound_min: 0.0
+  multiple_testing:
+    enabled: true
+    required: true
+    total_trials: 26
+    dsr_probability_min: 0.95
+    pbo:
+      required: true
+      partitions: 16
+      minimum_strategies: 10
+      probability_max: 0.05
+
+walk_forward:
+  required: true
+  result_path: null
+random_seed: 42

@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "3.1",
+    "factor_id_namespace": "profit-v3.1-investment-data-deltaes1-csi300-long-only-proxy",
+    "created_before_candidate_factor_derivation": true,
+    "created_before_candidate_factor_cache": true,
+    "created_before_candidate_rank_ic": true,
+    "created_before_candidate_strategy_backtest": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "external_paper_evidence_viewed_before_registration": true,
+    "project_historical_returns_previously_viewed": true,
+    "low_volatility_admission_outcomes_previously_viewed": true,
+    "candidate_selection_adaptation": "After the two preregistered low-volatility specifications were rejected, an independent blind research review selected a materially different one-year left-tail-risk-change mechanism using only primary external evidence. The review did not read local factor values, RankIC, returns, decisions, or HANDOFF.md.",
+    "exact_deltaes1_candidate_previously_tested": false,
+    "paper_exact_quantile_interpolation_verified": false,
+    "frozen_proxy_quantile_rule": "For N finite daily returns, sort ascending and average exactly the smallest ceil(0.01*N) observations. This nearest-rank rule is frozen because the accessible paper evidence does not disclose its software interpolation convention.",
+    "historical_evidence_only": true,
+    "current_state": "PREREGISTERED",
+    "external_token_required": false,
+    "provider_release": "investment_data_20260804_cn",
+    "provider_path": "data/market/a_share/qlib/investment_data_20260804_cn",
+    "provider_fingerprint": "e24ad8753bdd27610dc00061760cec593a560a3fb9b4986ba748c9250cfbdb10",
+    "provider_latest_session": "2026-08-04",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.95 coverage, and absolute rank correlation below 0.70 versus Alpha158_20, Amihud20HistoricalProxy, and every frozen same-provider candidate through v3.0",
+    "source_fields": [
+      "close"
+    ],
+    "provider_price_contract": "The pinned investment_data Qlib Provider supplies company-action-adjusted normalized close values. Daily returns are calculated directly from close; raw close/factor is not used because ex-right jumps would contaminate the left tail.",
+    "formation_policy": "For every target calendar month, calculate daily adjusted-close returns over two non-overlapping complete 12-calendar-month windows ending immediately before the target month. Each window requires at least 200 finite returns. ES1 is the negative mean of exactly the smallest ceil(1 percent times N) returns. DeltaES1 is current-window ES1 minus prior-window ES1; negate DeltaES1 and hold the score constant throughout the target month.",
+    "holding_policy": "Use the paper-supported monthly horizon: a 22-session forward label, Top 50, n_drop=1, and a 21-session minimum holding period. Do not alter the sign, two 12-month windows, 1 percent tail, 200-return floor, label, validation segment, or execution contract after viewing results.",
+    "paper_definition": "Sun, Wang, and Zhu study the one-year change in 1 percent expected shortfall in Chinese A shares. The lowest-minus-highest DeltaES1 value-weighted decile portfolio earns 10.668 percent annualized in their sample, and the paper reports that the premium is mainly driven by the low-DeltaES1 long leg.",
+    "paper_proxy_difference": "The paper uses all Shanghai and Shenzhen A shares, value-weighted deciles, ST/PT and additional sample filters, and a proprietary data set. QuantaAlpha uses point-in-time CSI300 members, a deterministic nearest-rank ES proxy, a monthly constant long-only Top50 score, and next-session-open execution. This is DeltaES1-CSI300-LongOnly-Proxy, not a paper replication or a profit guarantee.",
+    "prediction_direction": "lower_one_year_change_in_expected_shortfall_higher_next_month_return",
+    "minimum_daily_return_observations_per_window": 200,
+    "execution_contract": {
+      "strategy": "TopkDropoutStrategy",
+      "topk": 50,
+      "n_drop": 1,
+      "hold_thresh": 21,
+      "deal_price": "open",
+      "open_cost": 0.0005,
+      "close_cost": 0.0015,
+      "limit_threshold": 0.095
+    },
+    "admission_gates": {
+      "minimum_coverage": 0.95,
+      "minimum_mean_daily_rank_ic_exclusive": 0.0,
+      "maximum_absolute_rank_correlation_exclusive": 0.70,
+      "minimum_daily_return_observations_per_window": 200,
+      "historical_index_membership_required": true,
+      "provider_fingerprint_must_match": true,
+      "cache_code_binding_required": true
+    },
+    "factor_cache_preparation": {
+      "calculation_start": "2010-01-01",
+      "calculation_end": "2026-08-04",
+      "static_union_of_historical_members": true,
+      "membership_start": "2016-01-01",
+      "membership_end": "2026-08-04"
+    },
+    "homogeneous_price_volume_factor_count_before_v3_1": 26,
+    "homogeneous_price_volume_factor_count_after_v3_1": 27,
+    "historical_revealed_trial_floor_before_v3_1": 356,
+    "declared_trial_penalty_after_planned_v3_1_evaluations": 385,
+    "source_contracts": [
+      "https://doi.org/10.1016/j.pacfin.2021.101703",
+      "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3777383",
+      "https://sf.cufe.edu.cn/info/1157/11347.htm",
+      "https://github.com/chenditc/investment_data/blob/763d89573f21b04259652818b25930e32319ee33/qlib/normalize.py"
+    ],
+    "admission_factor_ids": [
+      "efaf6a5f1248d592"
+    ]
+  },
+  "factors": {
+    "efaf6a5f1248d592": {
+      "factor_id": "efaf6a5f1248d592",
+      "factor_name": "NegDeltaExpectedShortfall1Pct24MProxy",
+      "factor_expression": "-MONTHLY_DELTA_EXPECTED_SHORTFALL($close, 1, 12, 200)",
+      "factor_description": "Negative change between expected shortfall in the most recent and preceding complete 12-month windows, held constant throughout the target month. Higher scores identify stocks whose left-tail losses have decreased.",
+      "factor_formulation": "Score(t) = -(ES1[t-12,t-1] - ES1[t-24,t-13]); ES1(W) = -Mean(the smallest ceil(0.01*N) finite daily adjusted-close returns in W); N >= 200 in each window",
+      "metadata": {
+        "mechanism_id": "a_share_left_tail_risk_change_underreaction",
+        "hypothesis": "Within the point-in-time CSI300 universe, stocks whose one-year expected shortfall has decreased relative to the preceding year remain underpriced because investors underreact to persistent improvement in left-tail risk, leading to higher next-month returns.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true,
+        "cache_code_binding_required": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "The sole candidate, operator implementation, negative direction, two complete 12-month windows, 1 percent nearest-rank tail, 200-return floor, period, label, admission gates, and execution contract were frozen before its local factor values, RankIC, forward returns, cache, or strategy result were produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression negates current-minus-prior expected shortfall so the long-only rank favors decreasing left-tail risk. Both complete-year windows end before the target month, preventing target-month leakage."
+        }
+      }
+    }
+  }
+}

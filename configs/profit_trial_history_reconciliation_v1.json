@@ -1,0 +1,30 @@
+{
+  "schema_version": "profit_trial_history_reconciliation_v1",
+  "created_before_next_candidate": true,
+  "orphan_return_aliases": [
+    {
+      "path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628_replay/t26_aacce628_replay_cumulative_excess.csv",
+      "alias_of": "data/results/profit_validation/profit_20260804_070058/T26_aacce628/t26_aacce628_cumulative_excess.csv",
+      "required_raw_sha256": "adeb74b5f32fb3e00faf5bb8115988187ea953e92d8ea82dd82cca8a605c9a5f",
+      "source_metrics_path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628/t26_aacce628_backtest_metrics.json",
+      "replay_metrics_path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628_replay/t26_aacce628_replay_backtest_metrics.json",
+      "source_position_path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628/t26_aacce628_position_counts.csv",
+      "replay_position_path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628_replay/t26_aacce628_replay_position_counts.csv",
+      "required_position_sha256": "21e763535de374c5c03b1e75b88744e7039710e479886147bace80e93bf0e83d",
+      "replay_program_path": "data/results/profit_validation/profit_20260804_070058/T26_aacce628_replay/replay.py",
+      "required_replay_program_sha256": "7776d683a208758a30201a6b5d9a96c51044e3f9e07b51ade856685ec88d7416",
+      "reason": "Independent deterministic replay of T26; raw return and position-count files are byte-identical and effective metric configs are equal."
+    }
+  ],
+  "incomplete_trials": [
+    {
+      "run_id": "profit_20260806_161620",
+      "candidate": "T02_650cd2a4",
+      "factor_id": "650cd2a4a98c89f9",
+      "expected_status": "running",
+      "disposition": "INCOMPLETE_NO_REVEALED_RETURN",
+      "metrics_must_be_absent": true,
+      "reason": "Interrupted technical run produced only an effective config and no metrics or cumulative-return artifact; it is retained as evidence but excluded from revealed strategy outcomes."
+    }
+  ]
+}

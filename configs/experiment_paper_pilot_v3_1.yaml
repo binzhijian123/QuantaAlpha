@@ -1,0 +1,95 @@
+# Validation-only pilot for the paper-v3 family/variant contract.
+# This profile stops at the 2021 validation pool and is not a paper-scale run.
+
+planning:
+  enabled: true
+  num_directions: 2
+  max_attempts: 3
+  use_llm: true
+  allow_fallback: false
+  prompt_file: planning_prompts_paper_v3_1.yaml
+
+execution:
+  max_loops: 1
+  steps_per_loop: 5
+  step_n: 5
+  failed_loop_retry_budget: 1
+  use_local: true
+  parallel_execution: false
+  branch_log_root: log
+  branch_log_prefix: paper_v3_1_pilot
+
+evolution:
+  enabled: true
+  mutation_enabled: true
+  crossover_enabled: true
+  paper_fidelity_mode: true
+  max_rounds: 3
+  crossover_size: 2
+  crossover_n: 1
+  parallel_enabled: false
+  prefer_diverse_crossover: true
+  prompt_file: evolution_prompts.yaml
+  parent_selection_strategy: best
+  top_percent_threshold: 0.3
+  fresh_start: true
+  cleanup_on_finish: false
+
+quality_gate:
+  consistency_enabled: true
+  complexity_enabled: true
+  redundancy_enabled: true
+  consistency_strict_mode: true
+  consistency_require_pass: true
+  fail_closed_on_error: true
+  max_correction_attempts: 1
+
+factor:
+  factors_per_hypothesis: 3
+  generation_max_attempts: 3
+  require_exact_factor_count: true
+  variant_max_attempts: 2
+  variant_contract:
+    enabled: true
+    protocol_version: paper_family_v1
+    allowed_features: ["$open", "$high", "$low", "$close", "$volume", "$vwap"]
+    roles:
+      - id: canonical
+        variation_axis: none
+        instruction: Implement the family hypothesis directly without changing its mechanism or declared parameters.
+      - id: normalization_robustness
+        variation_axis: normalization
+        instruction: Change only the normalization or scaling method; preserve mechanism, sign, raw inputs, and target horizon.
+      - id: horizon_robustness
+        variation_axis: window
+        instruction: Change only one lookback or smoothing window; preserve mechanism, sign, raw inputs, normalization family, and target horizon.
+  complexity:
+    symbol_length_threshold: 250
+    base_features_threshold: 6
+    free_args_ratio_threshold: 0.5
+    unique_vars_ratio_threshold: 1.0
+  duplication:
+    enabled: true
+    threshold: 5
+    factor_zoo_path: null
+
+backtest:
+  use_docker: false
+  timeout: 800
+  qlib:
+    config_name: conf_baseline.yaml
+
+llm:
+  factor_mining_timeout: 999999
+  max_retries: 3
+  retry_delay: 1.0
+  json_mode_strict: true
+
+logging:
+  level: INFO
+  save_snapshots: true
+  save_trajectory_pool: true
+
+prompts:
+  planning: planning_prompts_paper_v3_1.yaml
+  evolution: evolution_prompts.yaml

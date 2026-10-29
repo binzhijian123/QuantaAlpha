@@ -1,0 +1,55 @@
+{
+  "schema_version": "profit_data_probe_v1",
+  "protocol_version": "2.0",
+  "created_before_probe": true,
+  "event_window_prices_may_be_read": true,
+  "forward_labels_or_strategy_returns_may_be_read": false,
+  "provider": "baostock_announcement_dates_plus_qlib_prices",
+  "base_provider": "data/market/a_share/qlib/investment_data_20260725_baostock_v1_9_sue_cn",
+  "quarterly_events": "data/market/a_share/staging/baostock_sue_promote_v1_9_windowed/seasonal_sue_events.csv.gz",
+  "market": "csi300",
+  "benchmark": "000300.SH",
+  "probe_window": [
+    "2024-01-02",
+    "2024-12-31"
+  ],
+  "selection": {
+    "eligible_rule": "point-in-time csi300 membership span overlaps the frozen probe window",
+    "eligible_code_count": 328,
+    "ranking_rule": "ascending sha256('profit-v2.0-abr-probe:' + canonical_code), then canonical_code",
+    "sample_size": 20,
+    "codes": [
+      "600026.SH",
+      "600600.SH",
+      "003816.SZ",
+      "600803.SH",
+      "002311.SZ",
+      "600999.SH",
+      "000975.SZ",
+      "600027.SH",
+      "601878.SH",
+      "600893.SH",
+      "002142.SZ",
+      "601600.SH",
+      "601865.SH",
+      "002709.SZ",
+      "601229.SH",
+      "601698.SH",
+      "000807.SZ",
+      "002603.SZ",
+      "300496.SZ",
+      "002841.SZ"
+    ]
+  },
+  "acceptance": {
+    "source_failures_max": 0,
+    "availability_leak_rows_max": 0,
+    "report_period_leak_rows_max": 0,
+    "conflicting_duplicate_quarters_max": 0,
+    "codes_with_any_abr_min": 16,
+    "point_in_time_daily_coverage_min": 0.5,
+    "deterministic_event_hash_match_required": true,
+    "deterministic_panel_hash_match_required": true
+  },
+  "failure_policy": "Do not replace sampled codes, relax thresholds, inspect forward labels or strategy returns, or promote a full-universe Provider. Record the failed probe and create a new protocol version for any material change."
+}

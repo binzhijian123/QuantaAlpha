@@ -1,0 +1,21 @@
+protocol_version: "1.1"
+run_id: null
+
+factor_library: "data/factorlib/all_factors_library_exp_20260607_004504.json"
+historical_provider: "cn_data"
+recent_provider: "data/market/a_share/qlib/a_stock_data_daily_cn"
+backtest_config: "configs/backtest.yaml"
+output_root: "data/results/profit_validation"
+
+skip_uncached: true
+cost_multipliers: [1.0, 1.5, 2.0]
+
+validation:
+  market: "csi300"
+  required_start: "2016-01-01"
+  required_end: "2025-12-26"
+  validation_start: "2021-01-01"
+  validation_end: "2021-12-31"
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  correlation_threshold: 0.70
+  data_sample_size: 20

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "intraday-shadow-t1-reversal-proxy-v3-ranked-target-quality",
+  "runId": "intraday_shadow_20260814_t1_reversal_v3",
+  "declaredAt": "2026-08-13T17:23:29+08:00",
+  "usageRealm": "INTRADAY_SHADOW",
+  "formalPaperEligible": false,
+  "automaticPromotionAllowed": false,
+  "historicalReturnValuesUsedForSelection": false,
+  "firstEligibleSignalDate": "2026-08-14",
+  "captureRoot": "data/market/a_share/intraday/a_stock_data_csi300",
+  "databasePath": "data/trading/intraday-shadow/intraday_shadow_20260814_t1_reversal_v3/ledger.sqlite3",
+  "supersedes": {
+    "runId": "intraday_shadow_20260814_t1_reversal_v2",
+    "reason": "The v2 aggregate decision-snapshot gate did not require every ranked decision target to pass the precise quote-time check.",
+    "supersededBeforeFirstEligibleSignalDate": true,
+    "frozenSessionsAtSupersession": 0,
+    "observationSessionsAtSupersession": 0,
+    "missedSessionsAtSupersession": 0,
+    "priorRunDataPreserved": true
+  },
+  "paperReference": {
+    "title": "Delayed Feedback Trading and Return Reversals: Evidence from China's 'T+1' Rule",
+    "authors": [
+      "Jing Yao",
+      "Yiwen Yang"
+    ],
+    "doi": "10.2139/ssrn.6736959",
+    "abstractUrl": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6736959",
+    "fullMethodVerified": false,
+    "implementationKind": "MECHANISM_PROXY",
+    "boundary": "The official abstract supports the delayed-feedback and t+1 intraday reversal mechanism. The full paper methodology was not accessible, so this run is not a paper replication."
+  },
+  "calibration": {
+    "reportPath": "data/market/a_share/intraday/a_stock_data_csi300/audits/2026-08-13/calibration_743820835eb1.json",
+    "fileSha256": "f4ac455d1cc3ea000cc4c61bc2ad7887683f077ea2c76ad962ba9a4ebe0286c8",
+    "reportSha256": "743820835eb17aff98b5fbfd9e0b5b0154cf976794928dcde2724186cb1db351"
+  },
+  "providerRoot": {
+    "path": "data/market/a_share/qlib/investment_data_20260812_cn",
+    "fingerprint": "33892a8e18ce019f7feea59cd0c58a0511775484830ebaea7b4e8c440ad6b1b7"
+  },
+  "strategy": {
+    "candidateFormula": "max(-rawReturn, 0) * turnoverPercent",
+    "baselineFormula": "max(-rawReturn, 0)",
+    "eligibleReturnDirection": "NEGATIVE_ONLY",
+    "mechanismProxy": true,
+    "paperReplication": false,
+    "topK": 50
+  },
+  "quality": {
+    "version": 1,
+    "minimumCoreFieldCoverageRatio": 0.95,
+    "requiredUniverseSize": 301,
+    "maximumQuoteAgeSeconds": 120,
+    "maximumFutureQuoteLeadSeconds": 5,
+    "requireBenchmarkUsable": true,
+    "requireExecutionQuotesForAllTargets": true
+  },
+  "qualityExtension": {
+    "requireDecisionQuotesForAllTargets": true
+  },
+  "timing": {
+    "decisionSlot": "14:50:00",
+    "executionSlot": "14:55:00",
+    "freezeAfter": "15:06:00",
+    "freezeDeadline": "15:20:00"
+  },
+  "execution": {
+    "initialCash": 1000000.0,
+    "riskDegree": 0.95,
+    "priceField": "price",
+    "settlement": "T+1",
+    "lotSize": 100,
+    "buyCostRate": 0.0005,
+    "sellCostRate": 0.0015,
+    "minimumCost": 5.0,
+    "slippageBps": 10.0,
+    "limitThreshold": 0.095,
+    "growthLimitThreshold": 0.195,
+    "starMinimumOrderSize": 200,
+    "starOrderIncrement": 1
+  },
+  "implementation": {
+    "files": [
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow.py",
+        "sha256": "6a288ba02249c213557e97c7d738f37ff293195bf229678a3a6625fe41a123f3"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v2.py",
+        "sha256": "10a2ab3cf332edfeeec105e5e5d1e2153061440950a14b03a681f30d9e7ec260"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v3.py",
+        "sha256": "001d28cd1d4e63abc111b1ebfbc10417e668aaf338a0b7baf4032302f0dfc7af"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_capture.py",
+        "sha256": "4d1f3f88c57d975202e9d89855c6b7c3fbfde3f41dcb90771ad8771e02af796a"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/providers/a_stock_data.py",
+        "sha256": "30979c4ddfbb992b51021090821efef9d12f3b9068119cf98c7a20e7b06c93b1"
+      },
+      {
+        "path": "quantaalpha/trading/market_data.py",
+        "sha256": "ac9d571b9e9cd23fd1488b6197fe135043d4bdd9748a51d8fae0ad35a32288c0"
+      },
+      {
+        "path": "quantaalpha/trading/paper.py",
+        "sha256": "feb7b6a8b240c0a85e2b268ccf600d7bc436c4654ac9e9b4f561c5bae14d27de"
+      },
+      {
+        "path": "quantaalpha/utils/provider_lineage.py",
+        "sha256": "d2dcd7b6f9252350fffbf4f251321d12a52302552482bc0a84a6a49efde48fa6"
+      },
+      {
+        "path": "quantaalpha/utils/qlib_provider.py",
+        "sha256": "5eda9dd3e4f6637c0e15be57802747e448f5df60250d3923c445d92ea38722f1"
+      }
+    ]
+  }
+}

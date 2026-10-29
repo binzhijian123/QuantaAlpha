@@ -1,0 +1,53 @@
+{
+  "calibration": {
+    "continuousSessionWindows": [
+      [
+        "09:30:00",
+        "11:30:00"
+      ],
+      [
+        "13:00:00",
+        "15:00:00"
+      ]
+    ],
+    "expectedSlotCount": 242,
+    "finalizeAfter": "15:05:00",
+    "qualityGates": {
+      "maxFutureQuoteLeadSeconds": 5,
+      "maxQuoteAgeSeconds": 120,
+      "maximumConsecutiveMissingSlots": 3,
+      "maximumOrphanSnapshots": 0,
+      "minimumBenchmarkCoverageRatio": 0.9,
+      "minimumMedianCoreFieldCoverageRatio": 0.95,
+      "minimumMedianUsableCoverageRatio": 0.95,
+      "minimumP10UsableCoverageRatio": 0.9,
+      "minimumSlotCoverageRatio": 0.9
+    },
+    "tradeDate": "2026-08-12"
+  },
+  "calibrationImplementationSha256": "4034025ee398f9a7d384f57199fc439ad496c413fde1aeb21db12b7cd6447cec",
+  "captureContract": {
+    "binding": {
+      "calendarSha256": "fda35acf26ca0e83424f71b113d4f1c1b5f260a863046be23b34df33d777d393",
+      "csi300Sha256": "64f9592b789d9a94870a7af7620b1be22d8f3210fba308c1253bde599e5fdb69",
+      "implementationSha256": "f71e2e777d30d14ce13b93998590b1bb3f720ff9a4aacd0d1f958d3fd609035d",
+      "pollSeconds": 60,
+      "providerLatestDate": "2026-08-11",
+      "providerPath": "data/market/a_share/qlib/investment_data_20260811_cn",
+      "symbolsSha256": "6c385ce90f6e6ae17a831253c2649861be4233bba0aaa332960db9f7101865aa"
+    },
+    "pollSeconds": 60,
+    "requestedSymbolCount": 301,
+    "usageRealm": "INTRADAY_RESEARCH_RAW"
+  },
+  "createdAt": "2026-08-12T03:09:12+08:00",
+  "createdBeforeCurrentTradeDateQuotesObserved": true,
+  "featureValuesPermitted": false,
+  "nextPhaseRule": "Only after this calibration passes may one new candidate and one baseline be frozen in a separate run before a later trading session. The active DeltaES1/B0 run cannot be modified.",
+  "phase": "CALIBRATION_ONLY",
+  "priorForcedProbe": "Connectivity-only quotes were dated 2026-08-11 and are excluded from this declaration.",
+  "profitEvidenceEligible": false,
+  "protocolId": "intraday_capture_calibration_v1_20260812",
+  "returnValuesPermitted": false,
+  "schemaVersion": 1
+}

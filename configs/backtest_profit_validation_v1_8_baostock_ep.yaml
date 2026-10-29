@@ -1,0 +1,115 @@
+random_seed: 42
+
+experiment:
+  name: "profit_validation_v1_8_baostock_ep"
+  recorder: "profit_validation_v1_8_baostock_ep"
+  output_dir: "data/results/profit_validation"
+  output_metrics_file: "backtest_metrics.json"
+
+factor_source:
+  type: "alpha158_20"
+  custom:
+    json_files: []
+    quality_filter: null
+    decision_filter: "accepted"
+    max_factors: null
+    use_llm_for_incompatible: false
+  combined:
+    official_source: "alpha158_20"
+    include_custom: true
+
+data:
+  provider_uri: "data/market/a_share/qlib/investment_data_20260725_baostock_v1_8_ep_cn"
+  provider_strict: true
+  region: "cn"
+  market: "csi300"
+  start_time: "2016-01-01"
+  end_time: "2026-07-22"
+  additional_fields:
+    - "pit_fy_roe_avg"
+    - "pit_fy_netprofit_yoy"
+    - "pit_book_to_price"
+    - "pit_earnings_to_price"
+
+dataset:
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "DropnaLabel"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  segments:
+    train: ["2016-01-01", "2020-12-29"]
+    valid: ["2021-01-04", "2021-12-29"]
+    test: ["2022-01-04", "2026-07-22"]
+
+model:
+  type: "lgb"
+  params:
+    loss: "mse"
+    learning_rate: 0.1
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 50
+    num_boost_round: 500
+    min_child_samples: 100
+    feature_fraction_bynode: 0.8
+
+backtest:
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal: "<PRED>"
+      topk: 50
+      n_drop: 5
+  backtest:
+    start_time: "2022-01-04"
+    end_time: "2026-07-22"
+    account: 100000000
+    benchmark: "SH000300"
+    exchange_kwargs:
+      limit_threshold: 0.095
+      deal_price: "open"
+      open_cost: 0.0005
+      close_cost: 0.0015
+      min_cost: 5
+
+llm:
+  enabled: false
+  cache_results: true
+  cache_dir: "data/results/factor_cache/profit_validation_v1_8_baostock_ep"
+  cache_namespace: "configured-by-profit-validator"
+  auto_extract_cache: false
+  debug: false
+
+factor_calculation:
+  output_dir: "data/results/computed_factors"
+  save_intermediate: true
+  n_jobs: 4
+  data_file: null

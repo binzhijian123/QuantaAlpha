@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.6",
+    "factor_id_namespace": "profit-v2.6-investment-data-pps1-csi300-long-only-proxy",
+    "created_before_candidate_factor_derivation": true,
+    "created_before_candidate_factor_cache": true,
+    "created_before_candidate_rank_ic": true,
+    "created_before_candidate_strategy_backtest": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "external_paper_evidence_viewed_before_registration": true,
+    "project_historical_returns_previously_viewed": true,
+    "related_liquidity_mechanisms_previously_tested": true,
+    "exact_nominal_share_price_factor_previously_tested": false,
+    "historical_evidence_only": true,
+    "current_state": "PREREGISTERED",
+    "provider_release": "investment_data_20260804_cn",
+    "provider_path": "data/market/a_share/qlib/investment_data_20260804_cn",
+    "provider_fingerprint": "e24ad8753bdd27610dc00061760cec593a560a3fb9b4986ba748c9250cfbdb10",
+    "provider_latest_session": "2026-08-04",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.95 coverage after the preregistered 5-yuan eligibility mask, and absolute rank correlation below 0.70 versus Alpha158_20, Amihud20HistoricalProxy, and every frozen same-provider price-volume candidate through v2.5",
+    "source_fields": [
+      "close",
+      "factor"
+    ],
+    "provider_price_contract": "For the pinned investment_data and Qlib releases, stored close equals source adjclose divided by first valid adjusted close, while stored factor equals source adjclose divided by source raw close and then by the same first valid adjusted close. Therefore stored close divided by stored factor reconstructs source raw nominal close.",
+    "formation_policy": "At each Provider close, reconstruct the source nominal share price as close/factor. Exclude observations below 5 nominal currency units, then negate the eligible price so lower-priced stocks receive higher scores. The score is first tradable at the following session open.",
+    "minimum_nominal_price": 5.0,
+    "holding_policy": "Use only the paper-supported one-month Pps1 horizon: a 22-session forward label, Top 50, n_drop=1, and a 21-session minimum holding period. Do not alter the price definition, threshold, direction, label, validation segment, or execution contract after viewing results.",
+    "paper_definition": "At the beginning of month t, sort stocks on share price at the end of month t-1 and hold during month t. The paper reports negative high-minus-low Pps1 spreads of 1.58 percentage points per month for July 2000 through June 2019 and 1.37 percentage points per month for July 2008 through June 2019. Stocks below 5 yuan are excluded after portfolio formation and before return calculation.",
+    "paper_proxy_difference": "The paper uses previous-month-end formation, Mainboard breakpoints, value-weighted quintiles, broad eligible A shares, and a high-minus-low portfolio. QuantaAlpha uses a daily point-in-time CSI300 signal with a 21-session staggered long-only TopK strategy. The Provider expression reconstructs tradable source nominal close and does not prove exact equivalence to the paper's split-and-delisting-adjusted CSMAR field. This is Pps1-CSI300-LongOnly-Proxy, not a paper replication.",
+    "prediction_direction": "lower_eligible_nominal_share_price_higher_next_month_return",
+    "execution_contract": {
+      "strategy": "TopkDropoutStrategy",
+      "topk": 50,
+      "n_drop": 1,
+      "hold_thresh": 21,
+      "deal_price": "open",
+      "open_cost": 0.0005,
+      "close_cost": 0.0015,
+      "limit_threshold": 0.095
+    },
+    "admission_gates": {
+      "minimum_coverage": 0.95,
+      "minimum_mean_daily_rank_ic_exclusive": 0.0,
+      "maximum_absolute_rank_correlation_exclusive": 0.70,
+      "minimum_nominal_price": 5.0,
+      "provider_factor_must_be_finite_and_positive": true,
+      "historical_index_membership_required": true,
+      "provider_fingerprint_must_match": true
+    },
+    "homogeneous_price_volume_factor_count_before_v2_6": 21,
+    "homogeneous_price_volume_factor_count_after_v2_6": 22,
+    "homogeneous_project_trial_count_before_v2_6": 30,
+    "homogeneous_project_trial_count_after_v2_6": 31,
+    "project_strategy_attempt_floor_after_v2_6": 35,
+    "source_contracts": [
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://www.gsm.pku.edu.cn/finvc/info/1028/1145_6.htm",
+      "https://www.pbcsf.tsinghua.edu.cn/PDF/wp6.pdf",
+      "https://github.com/chenditc/investment_data/blob/763d89573f21b04259652818b25930e32319ee33/qlib/normalize.py",
+      "https://github.com/microsoft/qlib/blob/b87a2c294d364a33fb739359886acffe8ec907d1/scripts/data_collector/yahoo/collector.py",
+      "https://github.com/chulwoohan/pyanomaly/blob/59758c913a4146bbfb9d3c056668ccdc5231c8c8/pyanomaly/characteristics.py"
+    ],
+    "admission_factor_ids": [
+      "9ed74ff7c9df603e"
+    ]
+  },
+  "factors": {
+    "9ed74ff7c9df603e": {
+      "factor_id": "9ed74ff7c9df603e",
+      "factor_name": "Pps1LowNominalPriceProxy",
+      "factor_expression": "MASK(-1 * ($close / $factor), ($close / $factor) >= 5)",
+      "factor_description": "Negative reconstructed source nominal close for CSI300 observations at or above 5 nominal currency units. Higher scores identify lower-priced eligible stocks; observations below the paper's threshold remain missing.",
+      "factor_formulation": "raw_price_t = close_t / factor_t; score_t = -raw_price_t when raw_price_t >= 5, otherwise missing; signal after close t, earliest execution at open t+1",
+      "metadata": {
+        "mechanism_id": "a_share_low_nominal_share_price_effect",
+        "hypothesis": "Within the point-in-time CSI300 universe and after excluding observations below 5 nominal currency units, lower nominal share prices predict higher returns over the next month.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "The sole candidate, Provider field algebra, 5-unit eligibility threshold, direction, period, label, and execution contract were frozen before its factor values, RankIC, forward returns, cache, or strategy result were produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "Negating reconstructed nominal close aligns higher scores with the paper-supported long-low-price direction, while MASK applies the preregistered 5-unit exclusion without filling excluded observations or using future information."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "calibration": {
+    "continuousSessionWindows": [
+      [
+        "09:30:00",
+        "11:30:00"
+      ],
+      [
+        "13:00:00",
+        "15:00:00"
+      ]
+    ],
+    "expectedSlotCount": 242,
+    "finalizeAfter": "15:05:00",
+    "qualityGates": {
+      "maxFutureQuoteLeadSeconds": 5,
+      "maxQuoteAgeSeconds": 120,
+      "maximumConsecutiveMissingSlots": 3,
+      "maximumOrphanSnapshots": 0,
+      "minimumBenchmarkCoverageRatio": 0.9,
+      "minimumMedianCoreFieldCoverageRatio": 0.95,
+      "minimumMedianUsableCoverageRatio": 0.95,
+      "minimumP10UsableCoverageRatio": 0.9,
+      "minimumSlotCoverageRatio": 0.9
+    },
+    "tradeDate": "2026-08-13"
+  },
+  "calibrationImplementationSha256": "4034025ee398f9a7d384f57199fc439ad496c413fde1aeb21db12b7cd6447cec",
+  "captureContract": {
+    "binding": {
+      "calendarSha256": "fda35acf26ca0e83424f71b113d4f1c1b5f260a863046be23b34df33d777d393",
+      "csi300Sha256": "ee16ef146857559d4fce571a559d8c07d72e167778a14d31a8548709a8c17913",
+      "implementationSha256": "a7fd2219cd9ace4a24f2e276540746be1785d2659f0a377164bd9be46c435f1b",
+      "pollSeconds": 60,
+      "providerLatestDate": "2026-08-12",
+      "providerPath": "data/market/a_share/qlib/investment_data_20260812_cn",
+      "symbolsSha256": "6c385ce90f6e6ae17a831253c2649861be4233bba0aaa332960db9f7101865aa"
+    },
+    "pollSeconds": 60,
+    "requestedSymbolCount": 301,
+    "sourceFallbackOrder": [
+      "a-stock-data/tencent-public",
+      "a-stock-data/sina-public",
+      "a-stock-data/eastmoney-public"
+    ],
+    "usageRealm": "INTRADAY_RESEARCH_RAW"
+  },
+  "correction": {
+    "change": "Add Eastmoney public quotes as a third progressive fallback with strict trade-date and quote-age checks.",
+    "reason": "The 2026-08-12 calibration had a 19-slot continuous outage when Tencent and Sina failed concurrently; no quality gate was relaxed."
+  },
+  "createdAt": "2026-08-13T01:02:35+08:00",
+  "createdBeforeCurrentTradeDateQuotesObserved": true,
+  "featureValuesPermitted": false,
+  "nextPhaseRule": "Only after this calibration passes may one new candidate and one baseline be frozen in a separate run before a later trading session. The active DeltaES1/B0 run cannot be modified.",
+  "phase": "CALIBRATION_ONLY",
+  "priorCalibration": {
+    "failedWindow": [
+      "2026-08-12T09:47:00+08:00",
+      "2026-08-12T10:05:00+08:00"
+    ],
+    "longestConsecutiveMissingSlots": 19,
+    "protocolId": "intraday_capture_calibration_v1_20260812",
+    "reportSha256": "8436f6a39f0fa71471572e9bdb3fed156cd55c697266338f373dacf49d4ebbec",
+    "status": "FAIL"
+  },
+  "profitEvidenceEligible": false,
+  "protocolId": "intraday_capture_calibration_v2_20260813",
+  "returnValuesPermitted": false,
+  "schemaVersion": 1
+}

@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.1",
+    "factor_id_namespace": "profit-v2.1-baostock-investment-to-assets",
+    "created_before_factor_derivation": true,
+    "created_before_provider_build": true,
+    "source_payloads_existed_before_registration": true,
+    "source_schema_and_coverage_viewed_before_registration": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "selection_period": [
+      "2020-01-02",
+      "2020-12-17"
+    ],
+    "segment_boundary_correction": "The validation end was moved from 2020-12-29 to 2020-12-17 after the first audit reported only 245 embargo sessions, but before any candidate cache, RankIC, correlation, or strategy return was produced. The 252-session formula, direction, and thresholds were unchanged.",
+    "selection_label": "Ref($close, -253) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 252,
+    "label_dependency_offset_trading_days": 253,
+    "segment_embargo_trading_days": 253,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 252-session label, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and all frozen v1.7/v1.8/v1.9/v2.0 candidates",
+    "required_provider_extension": "point_in_time_annual_investment_to_assets",
+    "source_batch": "baostock_fundamental_full_v1_7_windowed",
+    "source_fields": [
+      "code",
+      "pubDate",
+      "statDate",
+      "YOYAsset"
+    ],
+    "source_coverage_audit_before_registration": {
+      "files": 637,
+      "rows": 4196,
+      "codes": 637,
+      "valid_yoy_asset_rows": 4194,
+      "valid_yoy_asset_ratio": 0.9995233555767398,
+      "invalid_date_rows": 0,
+      "publication_before_period_end_rows": 0,
+      "non_december_report_rows": 0,
+      "conflicting_duplicate_keys": 0,
+      "returns_or_prices_read_for_audit": false
+    },
+    "report_frequency": "annual quarter 4 only",
+    "formula_policy": "BaoStock query_growth_data.YOYAsset is (current total assets - prior-year total assets) / abs(prior-year total assets). The investable score is its negative, so lower annual asset growth has a higher score.",
+    "availability_policy": "Use only quarter-4 reports published no later than June 30 of the following calendar year. A value becomes usable on the first provider trading session strictly after that June 30 formation cutoff, never on statDate or the earlier pubDate.",
+    "staleness_policy": "A value becomes missing after 18 calendar months from statDate, yielding the paper-aligned July-to-June annual holding window and preventing indefinite carry-forward.",
+    "missing_policy": "Missing or non-finite YOYAsset, invalid dates, pubDate before statDate, publication after the following June 30 formation cutoff, a non-December report, or conflicting duplicate reports fail closed to missing or a failed sync; no interpolation is allowed.",
+    "holding_policy": "Use the paper-supported annual I/A formation and holding horizon: form after June 30, trade from the first July session, and hold for 252 trading sessions. Do not alter the formation date, label, or hold threshold after viewing results.",
+    "paper_mapping_policy": "The paper defines I/A as annual total assets divided by prior-year total assets minus one. BaoStock YOYAsset is the same ratio because total assets are nonnegative; this implementation negates it so a higher factor score represents conservative investment.",
+    "paper_factor_difference": "The cited China study uses Mainboard breakpoints and value-weighted quintile portfolios formed annually. This implementation uses the point-in-time CSI300 universe, cross-sectional rank normalization, and the software's frozen TopkDropout model and execution contract.",
+    "revision_policy": "BaoStock exposes the current historical snapshot and no revision vintages. The candidate remains RESEARCH_ONLY even if historical gates pass.",
+    "probe_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "minimum_codes": 600,
+      "minimum_valid_source_ratio": 0.95,
+      "availability_leak_rows": 0,
+      "report_period_leak_rows": 0,
+      "deterministic_reuse_required": true
+    },
+    "homogeneous_trial_count_before_v2_1": 25,
+    "homogeneous_trial_count_after_v2_1": 26,
+    "project_strategy_attempt_floor_after_v2_1": 30,
+    "source_contracts": [
+      "https://doi.org/10.1287/mnsc.2023.4904",
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://global-q.org/uploads/1/2/2/6/122679606/portfoliostd_2020ajune.pdf",
+      "https://baostock.com/mainContent?file=pythonAPI.md",
+      "data/market/a_share/manifests/baostock_fundamental_full_v1_7_windowed.json"
+    ],
+    "admission_factor_ids": [
+      "aacce6286aeb85e5"
+    ]
+  },
+  "factors": {
+    "aacce6286aeb85e5": {
+      "factor_id": "aacce6286aeb85e5",
+      "factor_name": "BaoStockPointInTimeLowAssetGrowth",
+      "factor_expression": "-$pit_fy_asset_growth",
+      "factor_description": "Negative point-in-time annual total-asset growth from BaoStock, so conservative investment has the higher score.",
+      "factor_formulation": "score = -query_growth_data.YOYAsset for quarter 4 published by the following June 30; first-July-session availability; 18-month staleness; 252-session prediction and holding horizon",
+      "metadata": {
+        "mechanism_id": "a_share_annual_conservative_investment",
+        "hypothesis": "Within the point-in-time CSI300 universe, firms with lower annual total-asset growth earn higher subsequent 252-session returns than firms with aggressive asset growth.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after reviewing primary-source definitions and source-only schema/coverage, but before deriving the factor panel or reading its forward label, RankIC, model contribution, or strategy return."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression negates the frozen annual asset-growth field, matching the registered conservative-investment direction and annual horizon."
+        }
+      }
+    }
+  }
+}

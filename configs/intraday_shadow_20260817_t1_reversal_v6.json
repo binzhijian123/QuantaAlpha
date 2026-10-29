@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "intraday-shadow-t1-reversal-proxy-v6-independent-transport",
+  "runId": "intraday_shadow_20260817_t1_reversal_v6",
+  "declaredAt": "2026-08-14T22:24:37+08:00",
+  "usageRealm": "INTRADAY_SHADOW",
+  "formalPaperEligible": false,
+  "automaticPromotionAllowed": false,
+  "historicalReturnValuesUsedForSelection": false,
+  "firstEligibleSignalDate": "2026-08-17",
+  "captureRoot": "data/market/a_share/intraday/a_stock_data_csi300",
+  "databasePath": "data/trading/intraday-shadow/intraday_shadow_20260817_t1_reversal_v6/ledger.sqlite3",
+  "supersedes": {
+    "runId": "intraday_shadow_20260814_t1_reversal_v5",
+    "reason": "The first forward V5 day exposed prolonged simultaneous HTTP quote outages while its exact decision and execution snapshots remained valid. V6 keeps the frozen strategy and causal execution protocol unchanged and adds a qualified independent TCP fallback for the next session.",
+    "frozenSessionsAtSupersession": 1,
+    "observationSessionsAtSupersession": 0,
+    "missedSessionsAtSupersession": 0,
+    "priorRunDataPreserved": true,
+    "activationRequiresPriorSessionFinalizedThrough": "2026-08-14",
+    "automaticActivationAllowed": false
+  },
+  "paperReference": {
+    "title": "Delayed Feedback Trading and Return Reversals: Evidence from China's 'T+1' Rule",
+    "authors": [
+      "Jing Yao",
+      "Yiwen Yang"
+    ],
+    "doi": "10.2139/ssrn.6736959",
+    "abstractUrl": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6736959",
+    "fullMethodVerified": false,
+    "implementationKind": "MECHANISM_PROXY",
+    "boundary": "The official abstract supports the delayed-feedback and t+1 intraday reversal mechanism. The full paper methodology was not accessible, so this run is not a paper replication."
+  },
+  "calibration": {
+    "reportPath": "data/market/a_share/intraday/a_stock_data_csi300/audits/2026-08-13/calibration_743820835eb1.json",
+    "fileSha256": "f4ac455d1cc3ea000cc4c61bc2ad7887683f077ea2c76ad962ba9a4ebe0286c8",
+    "reportSha256": "743820835eb17aff98b5fbfd9e0b5b0154cf976794928dcde2724186cb1db351"
+  },
+  "providerRoot": {
+    "path": "data/market/a_share/qlib/investment_data_20260813_cn",
+    "fingerprint": "569a453d58cd5245e23ee8e094493dd2c12b43b37fa2b1d95c7138138eb0e69b"
+  },
+  "strategy": {
+    "candidateFormula": "max(-rawReturn, 0) * turnoverPercent",
+    "baselineFormula": "max(-rawReturn, 0)",
+    "eligibleReturnDirection": "NEGATIVE_ONLY",
+    "mechanismProxy": true,
+    "paperReplication": false,
+    "topK": 50
+  },
+  "quality": {
+    "version": 1,
+    "minimumCoreFieldCoverageRatio": 0.95,
+    "requiredUniverseSize": 301,
+    "maximumQuoteAgeSeconds": 120,
+    "maximumFutureQuoteLeadSeconds": 5,
+    "requireBenchmarkUsable": true,
+    "requireExecutionQuotesForAllTargets": true
+  },
+  "qualityExtension": {
+    "requireDecisionQuotesForAllTargets": true,
+    "requireCoreFieldAwareFallback": true,
+    "benchmarkTurnoverRequired": false
+  },
+  "causality": {
+    "version": 1,
+    "decisionIntentRequired": true,
+    "decisionFreezeAfter": "14:50:00",
+    "decisionFreezeDeadline": "14:54:30",
+    "executionBindingAfter": "14:56:00",
+    "executionBindingDeadline": "15:05:30",
+    "requireNoPriorPendingSession": true,
+    "requirePortfolioFingerprint": true
+  },
+  "sourceReliability": {
+    "version": 1,
+    "sourceOrder": [
+      "tencent",
+      "easy_tdx",
+      "eastmoney",
+      "sina"
+    ],
+    "equityCoreFields": [
+      "price",
+      "previousClose",
+      "turnoverPercent"
+    ],
+    "benchmarkCoreFields": [
+      "price",
+      "previousClose"
+    ],
+    "independentFallbackTransport": "TCP/7709",
+    "easyTdxPackageVersion": "1.20.6",
+    "realtimeContractSha256": "fbf4cc3834b34db992cacb3f484ca6c81653912039d4977e1f9e631c411b6f6c",
+    "requireRealtimeContractForEveryQuote": true,
+    "prohibitCrossSourceFieldMerge": true,
+    "qualification": {
+      "reportPath": "data/market/a_share/intraday/a_stock_data_csi300/audits/2026-08-14/source_qualification_v3_375f051506cd.json",
+      "fileSha256": "5fc79a4021b04c0fc9221e0c1e25da331e6d513627bcf9a01069527b9bef87da",
+      "reportSha256": "375f051506cde712eb24821cc14944af36f5eba2abbe55ecdd83a3975110601c"
+    }
+  },
+  "timing": {
+    "decisionSlot": "14:50:00",
+    "executionSlot": "14:55:00",
+    "freezeAfter": "14:56:00",
+    "freezeDeadline": "15:05:30"
+  },
+  "execution": {
+    "initialCash": 1000000.0,
+    "riskDegree": 0.95,
+    "priceField": "price",
+    "settlement": "T+1",
+    "lotSize": 100,
+    "buyCostRate": 0.0005,
+    "sellCostRate": 0.0015,
+    "minimumCost": 5.0,
+    "slippageBps": 10.0,
+    "limitThreshold": 0.095,
+    "growthLimitThreshold": 0.195,
+    "starMinimumOrderSize": 200,
+    "starOrderIncrement": 1
+  },
+  "implementation": {
+    "files": [
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow.py",
+        "sha256": "6a288ba02249c213557e97c7d738f37ff293195bf229678a3a6625fe41a123f3"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v2.py",
+        "sha256": "10a2ab3cf332edfeeec105e5e5d1e2153061440950a14b03a681f30d9e7ec260"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v3.py",
+        "sha256": "001d28cd1d4e63abc111b1ebfbc10417e668aaf338a0b7baf4032302f0dfc7af"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v4.py",
+        "sha256": "9fb8709f1f0211a00b7f5853bb1d318135ce846f096851c90828f42f22c66a7f"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v5.py",
+        "sha256": "cde2b1004dc96a5184fdf5ab4a8aa4dd41e3e45c7b60931640ee4688a923df60"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_shadow_v6.py",
+        "sha256": "426b0d188503024077863d5da1adeec2664574670f6a015256f8d1ec7eaf8528"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_capture.py",
+        "sha256": "4d1f3f88c57d975202e9d89855c6b7c3fbfde3f41dcb90771ad8771e02af796a"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_capture_v2.py",
+        "sha256": "98e389075c4e72f3db4ff1f68540db96f5d07e981baf5aae46df1cba45b442ca"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_capture_v3.py",
+        "sha256": "edf7e8e637d65174ecaadfd6eb6f29c93f4bcbf52313dc59735e73252f81c797"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/intraday_source_qualification_v3.py",
+        "sha256": "93676321838578c2015da5469a53b3beaf5f038c56d253165308bf2e9221cb68"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/providers/a_stock_data.py",
+        "sha256": "30979c4ddfbb992b51021090821efef9d12f3b9068119cf98c7a20e7b06c93b1"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/providers/a_stock_data_intraday_v2.py",
+        "sha256": "309744ba32ddb7e496ba1a922c01b760d97076820fa89fb90a7bbc91349067f8"
+      },
+      {
+        "path": "frontend-v2/backend/market_data/providers/a_stock_data_intraday_v3.py",
+        "sha256": "810c4ad0cfef440037ddeb038fd7c2e3c00a0a98353378e269c9b29fd77a11b9"
+      },
+      {
+        "path": "quantaalpha/trading/market_data.py",
+        "sha256": "ac9d571b9e9cd23fd1488b6197fe135043d4bdd9748a51d8fae0ad35a32288c0"
+      },
+      {
+        "path": "quantaalpha/trading/paper.py",
+        "sha256": "feb7b6a8b240c0a85e2b268ccf600d7bc436c4654ac9e9b4f561c5bae14d27de"
+      },
+      {
+        "path": "quantaalpha/utils/provider_lineage.py",
+        "sha256": "d2dcd7b6f9252350fffbf4f251321d12a52302552482bc0a84a6a49efde48fa6"
+      },
+      {
+        "path": "quantaalpha/utils/qlib_provider.py",
+        "sha256": "5eda9dd3e4f6637c0e15be57802747e448f5df60250d3923c445d92ea38722f1"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "d1b167460d837bd8a942dce61e7b3ab80209412f0d1898ffa856068497c894c0"
+      },
+      {
+        "path": "frontend-v2/backend/requirements.txt",
+        "sha256": "87417187e0a3930f8c82a72c1b7577bdaec522ad7f8d6d5e111fe6ff787492a7"
+      }
+    ]
+  }
+}

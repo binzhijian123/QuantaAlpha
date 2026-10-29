@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "1.8",
+    "factor_id_namespace": "profit-v1.8-baostock-ep",
+    "created_before_data_sync": false,
+    "created_before_full_historical_sync": true,
+    "schema_probe_only_before_registration": true,
+    "schema_probe_codes": [
+      "600000.SH",
+      "600519.SH"
+    ],
+    "schema_probe_period": [
+      "2026-07-20",
+      "2026-07-24"
+    ],
+    "candidate_historical_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-29"
+    ],
+    "selection_rule": "the sole candidate must have positive mean daily RankIC, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and the frozen v1.7 candidates",
+    "historical_evidence_only": true,
+    "required_provider_extension": "point_in_time_fundamentals",
+    "report_frequency": "daily valuation proxy",
+    "availability_policy": "BaoStock peTTM observed at the trade-date close is available only for next-session execution.",
+    "proxy_policy": "The signed reciprocal of BaoStock dynamic peTTM is an operational earnings-to-price proxy. It is not an exact reconstruction of the paper's most recently disclosed net profit excluding nonrecurrent gains and losses.",
+    "negative_earnings_policy": "Retain finite negative 1/peTTM values so loss-making firms remain on the growth side, matching the paper's factor-portfolio treatment; zero or missing peTTM remains missing.",
+    "revision_policy": "BaoStock exposes the current historical snapshot and no valuation revision vintages. Historical evidence remains RESEARCH_ONLY.",
+    "homogeneous_trial_count_before_v1_8": 22,
+    "homogeneous_trial_count_after_v1_8": 23,
+    "project_strategy_attempt_floor_after_v1_8": 27,
+    "source_contracts": [
+      "https://baostock.com/mainContent?file=pythonAPI.md",
+      "https://pypi.org/project/baostock/",
+      "https://doi.org/10.1016/j.jfineco.2019.03.008",
+      "https://hub.hku.hk/bitstream/10722/273695/1/content.pdf"
+    ],
+    "admission_factor_ids": [
+      "fd896b2dbe4091e8"
+    ]
+  },
+  "factors": {
+    "fd896b2dbe4091e8": {
+      "factor_id": "fd896b2dbe4091e8",
+      "factor_name": "BaoStockPointInTimeEarningsToPrice",
+      "factor_expression": "$pit_earnings_to_price",
+      "factor_description": "Signed earnings-to-price proxy derived from BaoStock daily dynamic PE at the trade-date close.",
+      "factor_formulation": "1 / query_history_k_data_plus.peTTM for finite nonzero peTTM; zero or missing peTTM is missing",
+      "metadata": {
+        "mechanism_id": "a_share_earnings_to_price_value_proxy",
+        "hypothesis": "Within the point-in-time CSI300 universe, firms with higher earnings relative to price earn higher next-period returns than firms with lower or negative earnings relative to price.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "paper_factor_difference": "The source paper uses the latest disclosed net profit excluding nonrecurrent gains and losses and monthly portfolio formation; this candidate uses BaoStock dynamic peTTM inside the existing frozen two-day-label strategy solely to test incremental software value.",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after a two-code schema-only probe and after earlier project returns were viewed, but before any full E/P synchronization, E/P cross-section, or E/P return result was viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define higher signed earnings-to-price as the value direction.",
+          "description_to_formulation": "The reciprocal converts lower positive PE to higher E/P and retains negative E/P without a performance-chosen cap or transform.",
+          "formulation_to_expression": "The expression directly reads the immutable Provider field derived by the declared formulation.",
+          "overall_feedback": "The candidate is a documented BaoStock proxy rather than an exact paper replication; semantic acceptance is not performance acceptance."
+        }
+      }
+    }
+  }
+}

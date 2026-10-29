@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "1.9",
+    "factor_id_namespace": "profit-v1.9-baostock-seasonal-sue",
+    "created_before_data_sync": false,
+    "created_before_full_historical_sync": true,
+    "schema_probe_only_before_registration": true,
+    "schema_probe_codes": [
+      "600000.SH",
+      "600519.SH"
+    ],
+    "schema_probe_period": [
+      "2022Q1",
+      "2024Q4"
+    ],
+    "candidate_historical_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 21-session label, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and all frozen v1.7/v1.8 candidates",
+    "required_provider_extension": "point_in_time_seasonal_earnings_surprise",
+    "source_fields": [
+      "code",
+      "pubDate",
+      "statDate",
+      "netProfit",
+      "epsTTM",
+      "totalShare"
+    ],
+    "report_frequency": "quarterly",
+    "formula_policy": "Convert BaoStock cumulative netProfit to standalone quarterly net profit. Unexpected earnings is the standalone quarterly profit minus the same fiscal quarter one year earlier. Divide by the sample standard deviation of the eight immediately preceding unexpected-earnings observations, requiring at least six non-missing observations and excluding the current observation.",
+    "proxy_policy": "This is a seasonal unexpected aggregate-net-profit proxy. The paper definition uses split-adjusted quarterly EPS; aggregate net profit is used because BaoStock does not expose a reliable historical split-adjusted quarterly EPS series.",
+    "availability_policy": "A quarterly value becomes usable on the first provider trading session strictly after BaoStock pubDate.",
+    "staleness_policy": "The signal becomes missing after six calendar months from statDate.",
+    "missing_policy": "Missing prior cumulative quarter, missing year-ago quarter, fewer than six valid prior unexpected-earnings observations, a zero or non-finite denominator, conflicting duplicates, or invalid dates all fail closed to missing or a failed sync; no interpolation is allowed.",
+    "revision_policy": "BaoStock exposes the current historical snapshot and no revision vintages. The candidate remains RESEARCH_ONLY even if historical gates pass.",
+    "probe_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "minimum_codes": 2,
+      "minimum_source_quarters_per_code": 13,
+      "availability_leak_rows": 0,
+      "report_period_leak_rows": 0,
+      "deterministic_reuse_required": true
+    },
+    "homogeneous_trial_count_before_v1_9": 23,
+    "homogeneous_trial_count_after_v1_9": 24,
+    "project_strategy_attempt_floor_after_v1_9": 28,
+    "source_contracts": [
+      "https://doi.org/10.1287/mnsc.2023.4904",
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://global-q.org/uploads/1/2/2/6/122679606/portfoliostd_2024april.pdf",
+      "https://pypi.org/project/baostock/"
+    ],
+    "admission_factor_ids": [
+      "adc47dae10dc00c7"
+    ]
+  },
+  "factors": {
+    "adc47dae10dc00c7": {
+      "factor_id": "adc47dae10dc00c7",
+      "factor_name": "BaoStockPointInTimeSeasonalEarningsSurprise",
+      "factor_expression": "$pit_sue_seasonal",
+      "factor_description": "Point-in-time seasonal unexpected quarterly net-profit proxy derived from BaoStock reports.",
+      "factor_formulation": "UE_q = standalone_net_profit_q - standalone_net_profit_q-4; SUE_q = UE_q / sample_std(UE_q-8..UE_q-1), min 6 observations; next-session availability and six-month staleness",
+      "metadata": {
+        "mechanism_id": "a_share_seasonal_earnings_surprise_proxy",
+        "hypothesis": "Within the point-in-time CSI300 universe, stocks with larger positive seasonal earnings surprises earn higher subsequent 21-session returns than stocks with negative surprises.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "paper_factor_difference": "The cited China anomaly study follows the Foster-Olsen-Shevlin split-adjusted EPS definition and mainboard breakpoints. This candidate uses aggregate net profit, the existing point-in-time CSI300 universe, and the software's fixed investability filters.",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after a two-code schema and cumulative-value probe, but before any full SUE synchronization, SUE cross-section, SUE IC, or SUE return result was viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression points only to the frozen point-in-time seasonal earnings-surprise field and its direction matches the registered hypothesis."
+        }
+      }
+    }
+  }
+}

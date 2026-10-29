@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "runId": "research_shadow_20260811_deltaes1_v1",
+  "declaredAt": "2026-08-11T20:32:46+08:00",
+  "usageRealm": "RESEARCH_SHADOW",
+  "paperEligible": false,
+  "formalPaperEligible": false,
+  "automaticPromotionAllowed": false,
+  "historicalStatus": "REJECTED",
+  "rankingObservedBeforeDeclaration": false,
+  "candidateId": "efaf6a5f1248d592",
+  "candidateName": "DeltaES1",
+  "candidateExpression": "-MONTHLY_DELTA_EXPECTED_SHORTFALL($close, 1, 12, 200)",
+  "providerPath": "data/market/a_share/qlib/investment_data_20260811_cn",
+  "providerFingerprint": "402ad2bc437dacdd583b15bcdf1d335368ffcf7d0cc6fee61cf99e0927b102ae",
+  "providerCutoff": "2026-08-11",
+  "providerLineageProofDir": "data/trading/research_shadow/research_shadow_20260811_deltaes1_v1/provider_lineage",
+  "labelHorizonSessions": 22,
+  "labelMatureCutoff": "2026-07-10",
+  "initialSignalDate": "2026-08-11",
+  "firstTradeDate": "2026-08-12",
+  "initialSignalDeadline": "2026-08-12T09:15:00+08:00",
+  "model": {
+    "type": "LightGBM",
+    "fixedBoostRounds": 69,
+    "earlyStoppingRounds": 0,
+    "seed": 42
+  },
+  "execution": {
+    "strategy": "TopkDropoutStrategy",
+    "topK": 50,
+    "nDrop": 1,
+    "holdThreshold": 21,
+    "riskDegree": 0.95,
+    "dealPrice": "open",
+    "buyCostRate": 0.0005,
+    "sellCostRate": 0.0015,
+    "limitThreshold": 0.095,
+    "benchmark": "000300.SH"
+  },
+  "evidenceMilestones": [20, 60, 120],
+  "config": {
+    "path": "configs/research_shadow_20260811_deltaes1_v1.yaml",
+    "sha256": "5ed8725690a4a6fbd30c3ba8b610dc1dc170d17145d71f7b4d8160642dadbdda"
+  },
+  "historicalDecision": {
+    "path": "data/results/profit_validation/profit_20260806_214107/decision.json",
+    "sha256": "7394a30cf350052f83f9558b0ea8a2d45c2b413649885b1edf2cd83ee3b0bbab",
+    "runId": "profit_20260806_214107",
+    "status": "REJECTED",
+    "reasons": [
+      "C1 2025 年税费后超额收益未达到门槛。",
+      "C1 最大回撤超过门槛。",
+      "多重试验调整后的统计证据未达到门槛。"
+    ]
+  },
+  "candidateSource": {
+    "path": "data/results/profit_validation/profit_20260806_214107/trial_libraries/T27_efaf6a5f.json",
+    "sha256": "7dd6d564a9847d66eb7bcda0555371a5d3426ed2b96a7c8c47b0c853e43794bb",
+    "upstreamPath": "data/factorlib/profit_trials_v3_1_investment_data_deltaes1_source.json",
+    "upstreamSha256": "fb0f03d9afba17afd0f0587ebac026b58dce8122dda7f0e2dc06ca86250291ef"
+  },
+  "arms": {
+    "C1": {
+      "label": "Alpha158(20) + DeltaES1",
+      "factorSource": "combined",
+      "factorJson": [
+        "data/factorlib/research_shadow_20260811_deltaes1_provider.json"
+      ],
+      "expectedFeatureCount": 21,
+      "snapshotPath": "data/trading/research_shadow/research_shadow_20260811_deltaes1_v1/snapshots/C1.pkl"
+    },
+    "B0": {
+      "label": "Alpha158(20)",
+      "factorSource": "alpha158_20",
+      "factorJson": [],
+      "expectedFeatureCount": 20,
+      "snapshotPath": "data/trading/research_shadow/research_shadow_20260811_deltaes1_v1/snapshots/B0.pkl"
+    }
+  },
+  "databasePath": "data/trading/research_shadow/research_shadow_20260811_deltaes1_v1/research_shadow.sqlite3",
+  "manifestPath": "data/trading/research_shadow/research_shadow_20260811_deltaes1_v1/manifest.json"
+}

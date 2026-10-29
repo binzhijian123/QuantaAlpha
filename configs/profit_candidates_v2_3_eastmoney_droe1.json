@@ -1,0 +1,121 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.3",
+    "factor_id_namespace": "profit-v2.3-eastmoney-conservative-droe1",
+    "inherits_hypothesis_from_protocol": "2.2",
+    "created_before_v2_3_structural_coverage_probe": true,
+    "created_before_candidate_factor_derivation": true,
+    "created_before_provider_build": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "alternative_eastmoney_snapshot_schema_previously_viewed": true,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "current_state": "SOURCE_METADATA_PROBE_PENDING",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and every frozen v1.7 through v2.2 candidate",
+    "required_provider_extension": "eastmoney_conservative_vintage_quarterly_droe",
+    "source_provider": "eastmoney_public_current_snapshot",
+    "source_batch": null,
+    "source_fields": [
+      "income.REPORT_DATE",
+      "income.NOTICE_DATE",
+      "income.UPDATE_DATE",
+      "income.DEDUCT_PARENT_NETPROFIT",
+      "balance.REPORT_DATE",
+      "balance.NOTICE_DATE",
+      "balance.UPDATE_DATE",
+      "balance.TOTAL_PARENT_EQUITY"
+    ],
+    "report_frequency": "quarterly",
+    "formula_policy": "qroe(t) = 100 * single-quarter DEDUCT_PARENT_NETPROFIT(t) / TOTAL_PARENT_EQUITY(t-1); pit_droe_1y(t) = qroe(t) - qroe(t-4). Every lag must be an exact adjacent calendar quarter; nearest-quarter substitution and interpolation are forbidden.",
+    "availability_policy": "Each current-snapshot component becomes usable only on the first base-provider trading session strictly after max(NOTICE_DATE, UPDATE_DATE). qroe(t) waits for both income(t) and balance(t-1); dROE(t) waits for income(t), balance(t-1), income(t-4), and balance(t-5). No value is backfilled to report end, original notice, or an earlier revision date.",
+    "revision_policy": "Eastmoney exposes a current snapshot rather than historical vintages. The final snapshot value is therefore deliberately hidden until its recorded UPDATE_DATE. This can delay or remove historical observations but cannot be relaxed after coverage is seen. Missing or untrustworthy UPDATE_DATE makes the component unavailable.",
+    "staleness_policy": "dROE(t) is missing after six calendar months from report end t; an update arriving after that deadline is never used for that quarter.",
+    "missing_policy": "Missing or non-finite numerator/denominator, non-positive lagged parent equity, missing exact quarter, invalid date, duplicate conflict, or stale availability fails closed to missing; max(NOTICE_DATE, UPDATE_DATE) is always enforced and no interpolation is allowed.",
+    "holding_policy": "Use the paper-supported dRoe1 one-month horizon: a 22-session forward label and a 21-session minimum holding period. Do not alter the formula, direction, validation segment, label, availability rule, or hold threshold after viewing results.",
+    "paper_definition": "The paper defines dRoe as current quarterly ROE minus four-quarter-lagged quarterly ROE, using income before extraordinary items divided by one-quarter-lagged book equity; dRoe1 is the one-month holding variant.",
+    "paper_proxy_difference": "Eastmoney DEDUCT_PARENT_NETPROFIT and TOTAL_PARENT_EQUITY are public current-snapshot line items. The formula is accounting-line-item aligned, but the conservative UPDATE_DATE delay is not a reconstruction of every historical revision vintage.",
+    "prediction_direction": "higher_factor_higher_next_return",
+    "structural_probe_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "financial_values_may_be_printed_or_aggregated": false,
+      "sample_codes": [
+        "600519.SH",
+        "000001.SZ",
+        "601318.SH",
+        "600030.SH"
+      ],
+      "start_report_date": "2016-01-01",
+      "end_report_date": "2021-12-31",
+      "minimum_timely_droe_ratio": 0.5,
+      "minimum_selection_year_timely_droe_ratio": 0.5,
+      "required_income_field": "DEDUCT_PARENT_NETPROFIT",
+      "required_balance_field": "TOTAL_PARENT_EQUITY",
+      "availability_date_fields": [
+        "NOTICE_DATE",
+        "UPDATE_DATE"
+      ]
+    },
+    "full_sync_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "minimum_codes": 600,
+      "minimum_valid_panel_ratio": 0.5,
+      "availability_leak_rows": 0,
+      "report_period_leak_rows": 0,
+      "conflicting_duplicate_events": 0,
+      "historical_index_membership_required": true,
+      "delisted_member_coverage_must_be_reported": true,
+      "immutable_raw_snapshot_required": true,
+      "deterministic_reuse_required": true
+    },
+    "homogeneous_trial_count_before_v2_3": 27,
+    "homogeneous_trial_count_after_v2_3": 28,
+    "project_strategy_attempt_floor_after_v2_3": 32,
+    "source_contracts": [
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://global-q.org/testingportfolios.html",
+      "https://global-q.org/uploads/1/2/2/6/122679606/portfoliostd_2024april.pdf",
+      "https://github.com/akfamily/akshare/blob/main/akshare/stock_feature/stock_three_report_em.py"
+    ],
+    "admission_factor_ids": [
+      "f6fa5e54ac1cf233"
+    ]
+  },
+  "factors": {
+    "f6fa5e54ac1cf233": {
+      "factor_id": "f6fa5e54ac1cf233",
+      "factor_name": "EastmoneyConservativeVintageDeltaQuarterlyROE",
+      "factor_expression": "$pit_droe_1y",
+      "factor_description": "Conservatively delayed point-in-time change in line-item quarterly ROE versus the exact same quarter one year earlier.",
+      "factor_formulation": "score = 100 * deducted parent net profit(t) / parent equity(t-1) - 100 * deducted parent net profit(t-4) / parent equity(t-5); all four components delayed to their latest notice/update boundary; six-month staleness; 22-session label and 21-session holding horizon",
+      "metadata": {
+        "mechanism_id": "a_share_quarterly_change_in_profitability",
+        "hypothesis": "Within the point-in-time CSI300 universe, firms with a larger year-over-year improvement in single-quarter ROE earn higher subsequent one-month returns.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "The v2.2 economic hypothesis is inherited unchanged and the v2.3 accounting/availability contract was frozen before structural coverage, candidate values, RankIC, forward returns, provider construction, or strategy results were produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression preserves the registered positive dROE direction and delegates the frozen accounting and availability rules to the provider field."
+        }
+      }
+    }
+  }
+}

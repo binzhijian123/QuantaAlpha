@@ -1,0 +1,105 @@
+{
+  "version": 2,
+  "runId": "research_shadow_20260812_deltaes1_causal_v2",
+  "declaredAt": "2026-08-12T01:15:39+08:00",
+  "usageRealm": "RESEARCH_SHADOW",
+  "paperEligible": false,
+  "formalPaperEligible": false,
+  "automaticPromotionAllowed": false,
+  "historicalStatus": "REJECTED",
+  "rankingObservedBeforeDeclaration": true,
+  "rankingObservationDisclosure": "The 2026-08-11 v1 target rankings were visible before this execution-only replacement was declared; no 2026-08-12 return was available and the candidate, model, provider, signal date, and first trade date were not changed.",
+  "replacementReason": "V1 used same-session close/high/low in an opening execution model. V2 removes those future fields before the first production fill.",
+  "replacesRunId": "research_shadow_20260811_deltaes1_v1",
+  "candidateId": "efaf6a5f1248d592",
+  "candidateName": "DeltaES1",
+  "candidateExpression": "-MONTHLY_DELTA_EXPECTED_SHORTFALL($close, 1, 12, 200)",
+  "providerPath": "data/market/a_share/qlib/investment_data_20260811_cn",
+  "providerFingerprint": "402ad2bc437dacdd583b15bcdf1d335368ffcf7d0cc6fee61cf99e0927b102ae",
+  "providerCutoff": "2026-08-11",
+  "providerLineageProofDir": "data/trading/research_shadow/research_shadow_20260812_deltaes1_causal_v2/provider_lineage",
+  "labelHorizonSessions": 22,
+  "labelMatureCutoff": "2026-07-10",
+  "initialSignalDate": "2026-08-11",
+  "firstTradeDate": "2026-08-12",
+  "initialSignalDeadline": "2026-08-12T09:15:00+08:00",
+  "model": {
+    "type": "LightGBM",
+    "fixedBoostRounds": 69,
+    "earlyStoppingRounds": 0,
+    "seed": 42
+  },
+  "execution": {
+    "strategy": "TopkDropoutStrategy",
+    "topK": 50,
+    "nDrop": 1,
+    "holdThreshold": 21,
+    "riskDegree": 0.95,
+    "dealPrice": "open",
+    "paperExecutionModelVersion": 2,
+    "lotSize": 100,
+    "buyCostRate": 0.0005,
+    "sellCostRate": 0.0015,
+    "minimumCost": 5.0,
+    "slippageBps": 10.0,
+    "limitThreshold": 0.095,
+    "growthLimitThreshold": 0.195,
+    "starMinimumOrderSize": 200,
+    "starOrderIncrement": 1,
+    "requireListingSessions": true,
+    "benchmark": "000300.SH"
+  },
+  "executionRuleBasis": {
+    "verifiedAt": "2026-08-12T01:15:39+08:00",
+    "sseRuleEffectiveDate": "2026-07-06",
+    "sseRuleUrl": "https://www.sse.com.cn/lawandrules/sselawsrules2025/stocks/exchange/c/c_20260424_10816482.shtml",
+    "szseRuleEffectiveDate": "2026-07-06",
+    "szseRuleUrl": "https://investor.szse.cn/lawrules/rule/trade/t20260424_620190.html",
+    "mainBoardLimit": 0.10,
+    "growthAndStarLimit": 0.20,
+    "newListingNoLimitSessions": 5,
+    "starMinimumOrderSize": 200
+  },
+  "evidenceMilestones": [20, 60, 120],
+  "config": {
+    "path": "configs/research_shadow_20260812_deltaes1_causal_v2.yaml",
+    "sha256": "2526f73ed12441b6f7f4bf4808beb36ea0c3caee0d2154d5335a2927fc9a9ed7"
+  },
+  "historicalDecision": {
+    "path": "data/results/profit_validation/profit_20260806_214107/decision.json",
+    "sha256": "7394a30cf350052f83f9558b0ea8a2d45c2b413649885b1edf2cd83ee3b0bbab",
+    "runId": "profit_20260806_214107",
+    "status": "REJECTED",
+    "reasons": [
+      "C1 2025 年税费后超额收益未达到门槛。",
+      "C1 最大回撤超过门槛。",
+      "多重试验调整后的统计证据未达到门槛。"
+    ]
+  },
+  "candidateSource": {
+    "path": "data/results/profit_validation/profit_20260806_214107/trial_libraries/T27_efaf6a5f.json",
+    "sha256": "7dd6d564a9847d66eb7bcda0555371a5d3426ed2b96a7c8c47b0c853e43794bb",
+    "upstreamPath": "data/factorlib/profit_trials_v3_1_investment_data_deltaes1_source.json",
+    "upstreamSha256": "fb0f03d9afba17afd0f0587ebac026b58dce8122dda7f0e2dc06ca86250291ef"
+  },
+  "arms": {
+    "C1": {
+      "label": "Alpha158(20) + DeltaES1",
+      "factorSource": "combined",
+      "factorJson": [
+        "data/factorlib/research_shadow_20260811_deltaes1_provider.json"
+      ],
+      "expectedFeatureCount": 21,
+      "snapshotPath": "data/trading/research_shadow/research_shadow_20260812_deltaes1_causal_v2/snapshots/C1.pkl"
+    },
+    "B0": {
+      "label": "Alpha158(20)",
+      "factorSource": "alpha158_20",
+      "factorJson": [],
+      "expectedFeatureCount": 20,
+      "snapshotPath": "data/trading/research_shadow/research_shadow_20260812_deltaes1_causal_v2/snapshots/B0.pkl"
+    }
+  },
+  "databasePath": "data/trading/research_shadow/research_shadow_20260812_deltaes1_causal_v2/research_shadow.sqlite3",
+  "manifestPath": "data/trading/research_shadow/research_shadow_20260812_deltaes1_causal_v2/manifest.json"
+}

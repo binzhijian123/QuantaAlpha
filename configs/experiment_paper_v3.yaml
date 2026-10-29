@@ -1,0 +1,85 @@
+# Frozen algorithm profile for arXiv:2602.07085v3.
+# This file is intentionally separate from configs/experiment.yaml.
+
+planning:
+  enabled: true
+  num_directions: 10
+  max_attempts: 5
+  use_llm: true
+  allow_fallback: false
+  prompt_file: planning_prompts.yaml
+
+execution:
+  # One mining trajectory is one complete five-action workflow.
+  max_loops: 1
+  steps_per_loop: 5
+  step_n: 5
+  use_local: true
+  parallel_execution: false
+  branch_log_root: log
+  branch_log_prefix: paper_v3
+
+evolution:
+  enabled: true
+  mutation_enabled: true
+  crossover_enabled: true
+  paper_fidelity_mode: true
+  # Controller rounds are phases: original + 5 * (mutation + crossover).
+  max_rounds: 11
+  crossover_size: 2
+  # The paper omits this count. Three is the locked official-default assumption
+  # and yields 141 attempted factors, consistent with "approximately 150".
+  crossover_n: 3
+  parallel_enabled: true
+  prefer_diverse_crossover: true
+  prompt_file: evolution_prompts.yaml
+  parent_selection_strategy: best
+  top_percent_threshold: 0.3
+  fresh_start: true
+  cleanup_on_finish: false
+
+quality_gate:
+  consistency_enabled: true
+  complexity_enabled: true
+  redundancy_enabled: true
+  # Corrections are allowed, but the final result must be fully consistent.
+  consistency_strict_mode: false
+  consistency_require_pass: true
+  fail_closed_on_error: true
+  max_correction_attempts: 3
+
+factor:
+  factors_per_hypothesis: 3
+  generation_max_attempts: 5
+  complexity:
+    symbol_length_threshold: 250
+    base_features_threshold: 6
+    free_args_ratio_threshold: 0.5
+    # The paper does not define a separate unique-variable ratio gate.
+    unique_vars_ratio_threshold: 1.0
+  duplication:
+    enabled: true
+    # The paper omits this numeric threshold; 5 is the official repository default.
+    threshold: 5
+    factor_zoo_path: null
+
+backtest:
+  use_docker: false
+  timeout: 800
+  qlib:
+    config_name: conf_baseline.yaml
+
+llm:
+  factor_mining_timeout: 999999
+  max_retries: 3
+  retry_delay: 1.0
+  json_mode_strict: true
+
+logging:
+  level: INFO
+  save_snapshots: true
+  save_trajectory_pool: true
+
+prompts:
+  planning: planning_prompts.yaml
+  evolution: evolution_prompts.yaml

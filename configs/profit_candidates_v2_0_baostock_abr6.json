@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.0",
+    "factor_id_namespace": "profit-v2.0-baostock-abr6",
+    "created_before_abr_computation": true,
+    "created_before_historical_abr_sync": true,
+    "announcement_dates_existed_before_registration": true,
+    "candidate_abr_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "selection_period": [
+      "2020-01-02",
+      "2021-06-28"
+    ],
+    "selection_label": "Ref($close, -127) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 126,
+    "label_dependency_offset_trading_days": 127,
+    "segment_embargo_trading_days": 127,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 126-session label, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and all frozen v1.7/v1.8/v1.9 candidates",
+    "required_provider_extension": "point_in_time_earnings_announcement_abnormal_return",
+    "source_quarterly_batch": "baostock_sue_promote_v1_9_windowed",
+    "source_fields": [
+      "code",
+      "pubDate",
+      "statDate"
+    ],
+    "price_fields": [
+      "close",
+      "volume"
+    ],
+    "report_frequency": "quarterly",
+    "formula_policy": "Let day 0 be the first Provider trading session on or after BaoStock pubDate. For d=-2,-1,0,+1, calculate the adjusted close-to-close stock return minus the adjusted close-to-close SH000300 return, then sum the four differences without compounding.",
+    "availability_policy": "The ABR value becomes usable on trading day +2, the first Provider session strictly after the final day +1 reaction return has closed.",
+    "staleness_policy": "The signal becomes missing after six calendar months from statDate.",
+    "missing_policy": "An invalid date, pubDate before statDate, conflicting duplicate report, incomplete or nonpositive price, non-finite return, or missing/zero stock volume on any event-window return session makes that report's ABR missing; no interpolation is allowed.",
+    "benchmark_policy": "SH000300 adjusted close return is the frozen investable-universe benchmark proxy.",
+    "paper_horizon_policy": "Use the paper-supported Abr6 horizon: 126 trading sessions. Do not substitute the old 21-session label after seeing results.",
+    "proxy_policy": "The source paper uses the value-weighted return of the broad stock market plus Mainboard breakpoints and value-weighted quintile portfolios. This implementation uses SH000300 and the existing point-in-time CSI300 universe, so it is a software-specific proxy rather than an exact paper replication.",
+    "revision_policy": "BaoStock exposes the current historical announcement snapshot and no revision vintages or intraday release timestamps. The candidate remains RESEARCH_ONLY even if historical gates pass.",
+    "probe_acceptance": {
+      "event_window_prices_may_be_read": true,
+      "forward_labels_or_strategy_returns_may_be_read": false,
+      "minimum_codes": 20,
+      "minimum_codes_with_abr": 16,
+      "availability_leak_rows": 0,
+      "report_period_leak_rows": 0,
+      "deterministic_reuse_required": true
+    },
+    "homogeneous_trial_count_before_v2_0": 24,
+    "homogeneous_trial_count_after_v2_0": 25,
+    "project_strategy_attempt_floor_after_v2_0": 29,
+    "source_contracts": [
+      "https://doi.org/10.1287/mnsc.2023.4904",
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://global-q.org/uploads/1/2/2/6/122679606/portfoliostd_2024april.pdf",
+      "data/market/a_share/manifests/baostock_sue_promote_v1_9_windowed.json"
+    ],
+    "admission_factor_ids": [
+      "830085ef6dd553e6"
+    ]
+  },
+  "factors": {
+    "830085ef6dd553e6": {
+      "factor_id": "830085ef6dd553e6",
+      "factor_name": "BaoStockPointInTimeEarningsAnnouncementAbnormalReturn",
+      "factor_expression": "$pit_abr_earnings",
+      "factor_description": "Point-in-time cumulative abnormal return around BaoStock quarterly publication dates.",
+      "factor_formulation": "ABR = sum(d=-2..+1, stock adjusted close return_d - SH000300 adjusted close return_d); day +2 availability; six-month staleness",
+      "metadata": {
+        "mechanism_id": "a_share_earnings_announcement_underreaction_proxy",
+        "hypothesis": "Within the point-in-time CSI300 universe, stocks with a larger positive earnings-announcement abnormal return earn higher returns over the subsequent 126 trading sessions.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "paper_factor_difference": "The cited China study reports significant Abr6 and Abr9 portfolios after 2007 using Mainboard breakpoints and value-weighted portfolios. This candidate uses the CSI300 index as the market-return proxy and the existing point-in-time CSI300 universe.",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after reviewing primary-source definitions and already-existing announcement metadata, but before computing any ABR value, ABR cross-section, forward label, IC, or strategy return."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression points only to the frozen point-in-time earnings-announcement abnormal-return field and its direction and horizon match the registered hypothesis."
+        }
+      }
+    }
+  }
+}

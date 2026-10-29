@@ -1,0 +1,54 @@
+protocol_version: "alpha158-standard-baseline-v1"
+run_id: null
+base_backtest_config: "configs/backtest_profit_validation_v1_3.yaml"
+output_root: "data/results/standard_baseline_validation"
+cost_multipliers: [1.0, 1.5, 2.0]
+
+comparison:
+  baseline:
+    id: "B0"
+    factor_source: "alpha158_20"
+    factor_count: 20
+  candidate:
+    id: "B1"
+    factor_source: "alpha158"
+    factor_count: 158
+
+frozen_contract:
+  base_backtest_sha256: "003a74f1df92b1ec023f3e3394f1814f287807c9f0d90c9087326673361fb9de"
+  provider_path: "data/market/a_share/qlib/investment_data_20260725_cn"
+  provider_fingerprint: "7813a5dc8e2d081f80d999599a8011013d202c2e7b12e1d3241553c81d3c5d35"
+  market: "csi300"
+  data_start: "2016-01-01"
+  data_end: "2026-07-22"
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  segments:
+    train: ["2016-01-01", "2020-12-29"]
+    valid: ["2021-01-04", "2021-12-29"]
+    test: ["2022-01-04", "2026-07-22"]
+  random_seed: 42
+  baseline_factor_count: 20
+  candidate_factor_count: 158
+
+promotion:
+  recent_window_days: 252
+  recent_annualized_excess_min: 0.0
+  latest_complete_year: "2025"
+  latest_year_annualized_excess_min: 0.02
+  information_ratio_min: 0.5
+  max_drawdown_abs_max: 0.15
+  cost_multiplier: 2.0
+  stressed_annualized_excess_min: 0.0
+  stability_years: ["2022", "2023", "2024", "2025"]
+  positive_years_min: 3
+  latest_year_max_positive_month_share: 0.8
+  annualized_excess_improvement_min: 0.02
+  information_ratio_improvement_min: 0.2
+  annualized_excess_degradation_max: 0.01
+  information_ratio_degradation_max: 0.1
+  drawdown_degradation_max: 0.02
+  bootstrap_iterations: 1000
+  bootstrap_block_days: 20
+  bootstrap_seed: 42
+  bootstrap_lower_bound_min: 0.0
+

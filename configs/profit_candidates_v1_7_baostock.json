@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "1.7",
+    "factor_id_namespace": "profit-v1.7-baostock",
+    "created_before_data_sync": false,
+    "created_before_full_historical_sync": true,
+    "schema_probe_only_before_registration": true,
+    "schema_probe_codes": [
+      "600000.SH",
+      "600519.SH"
+    ],
+    "schema_probe_report_period": "2024-12-31",
+    "historical_returns_viewed_before_registration": false,
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-29"
+    ],
+    "selection_rule": "highest positive mean daily RankIC after 0.70 absolute rank-correlation deduplication",
+    "historical_evidence_only": true,
+    "required_provider_extension": "point_in_time_fundamentals",
+    "report_frequency": "annual quarter 4 only",
+    "availability_policy": "The annual ROE and annual net-profit-growth bundle becomes usable on the first provider session strictly after max(query_profit_data.pubDate, query_growth_data.pubDate). Daily PB is observed at the trade-date close for next-session execution.",
+    "revision_policy": "BaoStock exposes the current historical snapshot with pubDate/statDate but no revision vintages. The protocol prevents ordinary announcement look-ahead but cannot reconstruct superseded historical values.",
+    "source_contracts": [
+      "https://baostock.com/mainContent?file=pythonAPI.md",
+      "https://pypi.org/project/baostock/",
+      "https://github.com/microsoft/qlib/blob/main/scripts/data_collector/pit/collector.py"
+    ],
+    "admission_factor_ids": [
+      "d0d967ce8bd80325",
+      "2f6d6f07ec59dd0f",
+      "44a5e58fedf248dd"
+    ]
+  },
+  "factors": {
+    "d0d967ce8bd80325": {
+      "factor_id": "d0d967ce8bd80325",
+      "factor_name": "BaoStockPointInTimeAnnualROE",
+      "factor_expression": "$pit_fy_roe_avg",
+      "factor_description": "Latest safely available full-year average return on equity from BaoStock.",
+      "factor_formulation": "query_profit_data.roeAvg for quarter 4, carried forward only after the frozen annual publication bundle becomes available",
+      "metadata": {
+        "mechanism_id": "annual_profitability_quality",
+        "hypothesis": "Firms with stronger full-year profitability earn higher next-period returns than less profitable firms.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after a two-code schema probe but before full historical synchronization or any historical return result was viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define full-year average ROE as the profitability-quality mechanism.",
+          "description_to_formulation": "The formulation uses only BaoStock quarter-4 roeAvg and does not describe it as deducted or single-quarter ROE.",
+          "formulation_to_expression": "The expression directly reads the lagged annual ROE field without a sign transformation.",
+          "overall_feedback": "Source semantics and positive direction are fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "2f6d6f07ec59dd0f": {
+      "factor_id": "2f6d6f07ec59dd0f",
+      "factor_name": "BaoStockPointInTimeAnnualEarningsGrowth",
+      "factor_expression": "$pit_fy_netprofit_yoy",
+      "factor_description": "Latest safely available full-year year-over-year net-profit growth from BaoStock.",
+      "factor_formulation": "query_growth_data.YOYNI for quarter 4, carried forward only after the frozen annual publication bundle becomes available",
+      "metadata": {
+        "mechanism_id": "annual_earnings_growth",
+        "hypothesis": "Stronger reported full-year net-profit growth predicts higher next-period returns before the information is fully incorporated.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after a two-code schema probe but before full historical synchronization or any historical return result was viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define full-year net-profit growth as the information mechanism.",
+          "description_to_formulation": "The formulation uses BaoStock quarter-4 YOYNI and does not claim single-quarter parent-attributable profit growth.",
+          "formulation_to_expression": "The expression directly reads the lagged annual net-profit-growth field.",
+          "overall_feedback": "Source semantics and positive direction are fixed; this is not performance acceptance."
+        }
+      }
+    },
+    "44a5e58fedf248dd": {
+      "factor_id": "44a5e58fedf248dd",
+      "factor_name": "BaoStockPointInTimeBookToPrice",
+      "factor_expression": "$pit_book_to_price",
+      "factor_description": "Positive book-to-price derived from BaoStock daily PB at the trade-date close; non-positive PB remains missing.",
+      "factor_formulation": "1 / query_history_k_data_plus.pbMRQ when pbMRQ > 0, otherwise missing",
+      "metadata": {
+        "mechanism_id": "book_to_price_value",
+        "hypothesis": "Cheaper firms relative to positive book equity earn higher next-period returns than expensive firms.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after a two-code schema probe but before full historical synchronization or any historical return result was viewed."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "hypothesis_to_description": "Both define lower positive price-to-book as a higher value score.",
+          "description_to_formulation": "The reciprocal maps lower positive daily PB to higher book-to-price and excludes non-positive values.",
+          "formulation_to_expression": "The expression directly reads the derived point-in-time book-to-price field.",
+          "overall_feedback": "Source semantics and positive direction are fixed; this is not performance acceptance."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+protocol:
+  id: "quantaalpha_arxiv_2602.07085v3_pilot_v3_1"
+  version: "1.1"
+  mode: "validation_only_pilot"
+
+sources:
+  paper:
+    arxiv_id: "2602.07085"
+    version: "v3"
+    revised_at: "2026-05-18"
+    url: "https://arxiv.org/abs/2602.07085v3"
+    path: "data/research/paper_validation/sources/arxiv_2602.07085v3.pdf"
+    sha256: "75e9c2ef5e8bb7fed78d27409e8252208e8fdacf6d10e1495dbc5b8767481848"
+  official_code:
+    repository: "https://github.com/QuantaAlpha/QuantaAlpha"
+    commit: "b7ceb27b1001261d7a95b209a963664ae1f8ab23"
+    archive_path: "data/research/paper_validation/sources/QuantaAlpha-b7ceb27b1001261d7a95b209a963664ae1f8ab23.tar.gz"
+    archive_sha256: "a3e1cf309629ab53efaea36bd6da9eaa35c2bf9a49b05b213a1064f1617bca35"
+
+paper_protocol:
+  market: "csi300"
+  raw_features: ["$open", "$high", "$low", "$close", "$volume", "$vwap"]
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  declared_segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test: ["2022-01-01", "2025-12-26"]
+  effective_segments:
+    train: ["2016-01-01", "2020-12-29"]
+    valid: ["2021-01-04", "2021-12-29"]
+    test: ["2022-01-04", "2025-12-26"]
+  planning_directions: 10
+  evolution_cycles: 5
+  expected_phase_rounds: 11
+  factors_per_hypothesis: 3
+  factor_pool_target: 150
+  complexity:
+    symbol_length_threshold: 250
+    base_features_threshold: 6
+    free_args_ratio_threshold: 0.5
+  strategy:
+    topk: 50
+    n_drop: 5
+    deal_price: "open"
+    limit_threshold: 0.095
+    open_cost: 0.0005
+    close_cost: 0.0015
+  main_claim:
+    backbone: "gpt-5.2"
+    ic: 0.0472
+    rank_ic: 0.0459
+    annualized_excess_return: 0.0468
+    information_ratio: 0.6453
+    max_drawdown: -0.118
+
+experiment_contract:
+  planning_directions: 2
+  evolution_cycles: 1
+  expected_phase_rounds: 3
+  factors_per_hypothesis: 3
+  failed_loop_retry_budget: 1
+  strict_json_mode: true
+  variant_protocol_version: "paper_family_v1"
+  raw_features: ["$open", "$high", "$low", "$close", "$volume", "$vwap"]
+  variant_roles:
+    - id: canonical
+      variationAxis: none
+    - id: normalization_robustness
+      variationAxis: normalization
+    - id: horizon_robustness
+      variationAxis: window
+  complexity:
+    symbol_length_threshold: 250
+    base_features_threshold: 6
+    free_args_ratio_threshold: 0.5
+
+replication_assumptions:
+  crossover_children_per_phase: 1
+  expected_factor_attempts: 15
+  factor_pool:
+    correlation_method: "mean_daily_cross_sectional_spearman"
+    max_abs_correlation: 0.7
+    max_factors: 150
+    max_fraction: 0.5
+    min_cross_section_size: 30
+    min_valid_days: 60
+
+pilot_acceptance:
+  expected_trajectories: 5
+  factors_per_trajectory: 3
+  minimum_library_factors: 12
+  minimum_selected_factors: 1
+  minimum_selected_mean_rankic: 0.0
+  require_positive_trajectory_rankic: true
+  require_positive_feedback: true
+
+runtime:
+  experiment_config: "configs/experiment_paper_pilot_v3_1.yaml"
+  backtest_config: "configs/backtest_paper_v3.yaml"
+  provider_uri: "data/market/a_share/qlib/investment_data_20260725_cn"
+  provider_fingerprint: "7813a5dc8e2d081f80d999599a8011013d202c2e7b12e1d3241553c81d3c5d35"
+  factor_data:
+    start_time: "2015-01-01"
+    end_time: "2026-07-24"
+    path: "data/research/paper_validation/factor_data/investment_data_20260725/daily_pv.h5"
+    manifest_path: "data/research/paper_validation/factor_data/investment_data_20260725/manifest.json"
+  critical_source_files:
+    - "quantaalpha/llm/config.py"
+    - "quantaalpha/llm/client.py"
+    - "quantaalpha/pipeline/planning.py"
+    - "quantaalpha/pipeline/prompts/planning_prompts_paper_v3_1.yaml"
+    - "quantaalpha/pipeline/factor_mining.py"
+    - "quantaalpha/pipeline/loop.py"
+    - "quantaalpha/pipeline/evolution/controller.py"
+    - "quantaalpha/factors/proposal.py"
+    - "quantaalpha/factors/prompts/prompts.yaml"
+    - "quantaalpha/factors/qlib_utils.py"
+    - "quantaalpha/factors/regulator/consistency_checker.py"
+    - "quantaalpha/factors/regulator/consistency_prompts.yaml"
+    - "quantaalpha/factors/library.py"
+    - "quantaalpha/validation/paper.py"
+    - "quantaalpha/validation/factor_pool.py"
+    - "quantaalpha/validation/paper_pool.py"
+    - "quantaalpha/validation/pilot_audit.py"
+    - "scripts/run_paper_validation_preflight.py"
+    - "scripts/build_paper_factor_pool.py"
+    - "scripts/audit_paper_validation_pilot.py"
+    - "scripts/start_paper_validation_pilot_v3_1.sh"
+    - "configs/experiment_paper_pilot_v3_1.yaml"
+    - "configs/paper_validation_pilot_v3_1.yaml"
+    - "run.sh"
+
+claim_parity:
+  accepted_backbones: ["gpt-5.2"]
+  documented_gap:
+    - "The pilot is 15 attempted factors, not the paper-scale run."
+    - "The configured backbone differs from the paper main-claim backbone unless CHAT_MODEL is gpt-5.2."
+    - "The paper does not publish the numeric AST-duplication threshold."
+    - "The 2022-2025 test segment was viewed in an earlier run and is not independent evidence."
+
+output:
+  root: "data/results/paper_validation"

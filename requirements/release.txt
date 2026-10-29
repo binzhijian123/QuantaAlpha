@@ -1,0 +1,3 @@
+# Optional official membership XLS parsing
+-r ../requirements.txt
+xlrd>=2.0.1,<3

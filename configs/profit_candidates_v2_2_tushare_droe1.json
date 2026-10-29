@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "schema_version": "profit_preregistered_candidates_v1",
+    "protocol_version": "2.2",
+    "factor_id_namespace": "profit-v2.2-tushare-droe1",
+    "created_before_real_tushare_api_probe": true,
+    "created_before_candidate_factor_derivation": true,
+    "created_before_provider_build": true,
+    "source_schema_and_official_docs_viewed_before_registration": true,
+    "alternative_source_quarterly_roe_values_viewed_before_registration": true,
+    "candidate_factor_values_viewed_before_registration": false,
+    "candidate_forward_returns_viewed_before_registration": false,
+    "project_historical_returns_previously_viewed": true,
+    "historical_evidence_only": true,
+    "current_state": "BLOCKED_DATA_ACCESS",
+    "selection_period": [
+      "2021-01-04",
+      "2021-12-01"
+    ],
+    "selection_label": "Ref($close, -22) / Ref($close, -1) - 1",
+    "selection_horizon_trading_days": 21,
+    "label_dependency_offset_trading_days": 22,
+    "segment_embargo_trading_days": 22,
+    "selection_rule": "the sole candidate must have positive mean daily RankIC on the frozen 22-session label, at least 0.50 coverage, and absolute rank correlation below 0.70 versus Alpha158_20 and every frozen v1.7 through v2.1 candidate",
+    "required_provider_extension": "point_in_time_quarterly_droe",
+    "source_provider": "tushare_pro",
+    "source_batch": null,
+    "source_fields": [
+      "fina_indicator.ts_code",
+      "fina_indicator.ann_date",
+      "fina_indicator.end_date",
+      "fina_indicator.update_flag",
+      "fina_indicator.q_roe",
+      "disclosure_date.actual_date"
+    ],
+    "report_frequency": "quarterly",
+    "formula_policy": "For the latest available exact quarter t, pit_droe_1y = q_roe(t) - q_roe(t-4). The lag must be the same calendar quarter exactly one year earlier; nearest-quarter substitution and interpolation are forbidden.",
+    "availability_policy": "Each report version becomes usable on the first base-provider trading session strictly after max(fina_indicator.ann_date, disclosure_date.actual_date). A report or revision is never backfilled to report end or announcement day.",
+    "revision_policy": "Maintain the latest version available as of every session for each exact report period. A later ann_date replaces that period only from its own next trading session and recomputes dROE when the current or lagged quarter changes. If the live API exposes only today\u2019s revised snapshot rather than historical announced versions, the candidate remains RESEARCH_ONLY and cannot enter paper trading.",
+    "staleness_policy": "The latest quarter and its derived dROE become missing after six calendar months from report end. Values are not carried indefinitely.",
+    "missing_policy": "Missing or non-finite current q_roe, missing exact t-4 q_roe, invalid dates, unavailable revisions, stale reports, or conflicting duplicate events fail closed to missing; no interpolation is allowed.",
+    "holding_policy": "Use the paper-supported dRoe1 one-month horizon: a 22-session forward label and a 21-session minimum holding period. Do not alter the formula, direction, validation segment, label, or hold threshold after viewing results.",
+    "paper_definition": "The source paper defines dRoe as the current quarterly ROE minus four-quarter-lagged quarterly ROE, using the most recently announced quarterly report whose report end is within six months; dRoe1 is the one-month holding variant.",
+    "paper_proxy_difference": "The paper constructs quarterly ROE from income before extraordinary items and one-quarter-lagged book equity. This implementation uses Tushare\u2019s provider-defined single-quarter q_roe field, so it is paper-aligned but not an accounting-line-item-exact replication.",
+    "prediction_direction": "higher_factor_higher_next_return",
+    "access_probe_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "minimum_codes": 2,
+      "required_apis": [
+        "fina_indicator",
+        "disclosure_date"
+      ],
+      "required_metric": "q_roe",
+      "daily_basic_must_not_be_called": true,
+      "token_or_secret_must_not_be_persisted": true
+    },
+    "full_sync_acceptance": {
+      "returns_or_prices_may_be_read": false,
+      "minimum_codes": 600,
+      "minimum_valid_source_ratio": 0.50,
+      "availability_leak_rows": 0,
+      "report_period_leak_rows": 0,
+      "conflicting_duplicate_events": 0,
+      "historical_revision_vintages_or_equivalent_primary_evidence_required": true,
+      "deterministic_reuse_required": true
+    },
+    "alternative_source_audit": {
+      "baostock": "Rejected for dROE because dupontROE and roeAvg are cumulative year-to-date rather than single-quarter ROE.",
+      "eastmoney_current_snapshot": "Research-only probe covered 16 deterministic CSI300 symbols and 724 quarterly rows; 673 rows had UPDATE_DATE later than NOTICE_DATE, so applying current values from NOTICE_DATE would leak revisions.",
+      "returns_or_prices_read": false
+    },
+    "homogeneous_trial_count_before_v2_2": 26,
+    "homogeneous_trial_count_after_v2_2": 27,
+    "project_strategy_attempt_floor_after_v2_2": 31,
+    "source_contracts": [
+      "https://ira.lib.polyu.edu.hk/bitstream/10397/115240/1/Li_Replicating_Digesting_Anomalies.pdf",
+      "https://global-q.org/testingportfolios.html",
+      "https://global-q.org/uploads/1/2/2/6/122679606/portfoliostd_2024april.pdf",
+      "https://tushare.pro/document/2?doc_id=79",
+      "https://tushare.pro/document/2?doc_id=162"
+    ],
+    "admission_factor_ids": [
+      "b0a4d1dde215df2f"
+    ]
+  },
+  "factors": {
+    "b0a4d1dde215df2f": {
+      "factor_id": "b0a4d1dde215df2f",
+      "factor_name": "TusharePointInTimeDeltaQuarterlyROE",
+      "factor_expression": "$pit_droe_1y",
+      "factor_description": "Point-in-time change in single-quarter ROE versus the exact same quarter one year earlier.",
+      "factor_formulation": "score = latest available q_roe(t) - latest available q_roe(t-4); next-session publication and revision timing; six-calendar-month staleness; 22-session label and 21-session holding horizon",
+      "metadata": {
+        "mechanism_id": "a_share_quarterly_change_in_profitability",
+        "hypothesis": "Within the point-in-time CSI300 universe, firms with a larger year-over-year improvement in single-quarter ROE earn higher subsequent one-month returns.",
+        "prediction_direction": "higher_factor_higher_next_return",
+        "historical_evidence_only": true
+      },
+      "feedback": {
+        "decision": false,
+        "reason": "Registered after reviewing primary-source definitions and source-only alternative-provider contracts, but before a real Tushare API probe, factor derivation, provider build, forward label, RankIC, model contribution, or strategy return was produced."
+      },
+      "quality_gate": {
+        "consistency_enabled": true,
+        "consistency_passed": true,
+        "checker": "preregistered_manual_semantic_review_v1",
+        "consistency_check": {
+          "is_consistent": true,
+          "reason": "The expression preserves the registered direction: a larger current-minus-year-ago single-quarter ROE change has a higher factor score."
+        }
+      }
+    }
+  }
+}

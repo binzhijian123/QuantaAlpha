@@ -1,0 +1,113 @@
+protocol:
+  id: "quantaalpha_arxiv_2602.07085v3"
+  version: "1.0"
+  mode: "paper_algorithm_validation"
+
+sources:
+  paper:
+    arxiv_id: "2602.07085"
+    version: "v3"
+    revised_at: "2026-05-18"
+    url: "https://arxiv.org/abs/2602.07085v3"
+    path: "data/research/paper_validation/sources/arxiv_2602.07085v3.pdf"
+    sha256: "75e9c2ef5e8bb7fed78d27409e8252208e8fdacf6d10e1495dbc5b8767481848"
+  official_code:
+    repository: "https://github.com/QuantaAlpha/QuantaAlpha"
+    commit: "b7ceb27b1001261d7a95b209a963664ae1f8ab23"
+    archive_path: "data/research/paper_validation/sources/QuantaAlpha-b7ceb27b1001261d7a95b209a963664ae1f8ab23.tar.gz"
+    archive_sha256: "a3e1cf309629ab53efaea36bd6da9eaa35c2bf9a49b05b213a1064f1617bca35"
+
+paper_protocol:
+  market: "csi300"
+  raw_features: ["$open", "$high", "$low", "$close", "$volume", "$vwap"]
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  declared_segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test: ["2022-01-01", "2025-12-26"]
+  effective_segments:
+    train: ["2016-01-01", "2020-12-29"]
+    valid: ["2021-01-04", "2021-12-29"]
+    test: ["2022-01-04", "2025-12-26"]
+  planning_directions: 10
+  evolution_cycles: 5
+  expected_phase_rounds: 11
+  factors_per_hypothesis: 3
+  factor_pool_target: 150
+  complexity:
+    symbol_length_threshold: 250
+    base_features_threshold: 6
+    free_args_ratio_threshold: 0.5
+  strategy:
+    topk: 50
+    n_drop: 5
+    deal_price: "open"
+    limit_threshold: 0.095
+    open_cost: 0.0005
+    close_cost: 0.0015
+  main_claim:
+    backbone: "gpt-5.2"
+    ic: 0.0472
+    rank_ic: 0.0459
+    annualized_excess_return: 0.0468
+    information_ratio: 0.6453
+    max_drawdown: -0.118
+
+replication_assumptions:
+  crossover_children_per_phase: 3
+  expected_factor_attempts: 141
+  factor_pool:
+    correlation_method: "mean_daily_cross_sectional_spearman"
+    max_abs_correlation: 0.7
+    max_factors: 150
+    max_fraction: 0.5
+    min_cross_section_size: 30
+    min_valid_days: 60
+
+runtime:
+  experiment_config: "configs/experiment_paper_v3.yaml"
+  backtest_config: "configs/backtest_paper_v3.yaml"
+  provider_uri: "data/market/a_share/qlib/investment_data_20260725_cn"
+  provider_fingerprint: "7813a5dc8e2d081f80d999599a8011013d202c2e7b12e1d3241553c81d3c5d35"
+  factor_data:
+    start_time: "2015-01-01"
+    end_time: "2026-07-24"
+    path: "data/research/paper_validation/factor_data/investment_data_20260725/daily_pv.h5"
+    manifest_path: "data/research/paper_validation/factor_data/investment_data_20260725/manifest.json"
+  critical_source_files:
+    - "quantaalpha/pipeline/evolution/controller.py"
+    - "quantaalpha/pipeline/evolution/trajectory.py"
+    - "quantaalpha/pipeline/evolution/mutation.py"
+    - "quantaalpha/pipeline/evolution/crossover.py"
+    - "quantaalpha/pipeline/prompts/evolution_prompts.yaml"
+    - "quantaalpha/pipeline/factor_mining.py"
+    - "quantaalpha/pipeline/loop.py"
+    - "quantaalpha/factors/proposal.py"
+    - "quantaalpha/factors/library.py"
+    - "quantaalpha/factors/coder/factor.py"
+    - "quantaalpha/validation/paper.py"
+    - "quantaalpha/validation/factor_pool.py"
+    - "quantaalpha/validation/paper_pool.py"
+    - "scripts/run_paper_validation_preflight.py"
+    - "scripts/build_paper_factor_pool.py"
+    - "scripts/start_paper_validation.sh"
+    - "scripts/start_paper_validation_pilot.sh"
+    - "run.sh"
+    - "quantaalpha/factors/coder/evaluators.py"
+    - "quantaalpha/factors/regulator/consistency_checker.py"
+    - "quantaalpha/factors/regulator/factor_regulator.py"
+    - "quantaalpha/backtest/factor_loader.py"
+    - "quantaalpha/backtest/run_backtest.py"
+    - "quantaalpha/backtest/runner.py"
+
+claim_parity:
+  accepted_backbones: ["gpt-5.2"]
+  documented_gap:
+    - "The paper does not publish the numeric AST-duplication threshold."
+    - "The paper does not publish crossover children per phase; the locked profile uses the official default of 3."
+    - "The paper does not publish the output-correlation aggregation formula; the locked profile uses mean daily cross-sectional Spearman correlation."
+    - "The paper does not unambiguously define the 50% pool-cap denominator; the locked workflow uses quality-gate-eligible factors."
+    - "The official main branch defaults are not the paper experiment settings."
+
+output:
+  root: "data/results/paper_validation"
